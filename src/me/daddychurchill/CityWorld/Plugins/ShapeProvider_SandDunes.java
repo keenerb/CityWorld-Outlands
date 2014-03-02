@@ -141,6 +141,10 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 		if (y > subsurfaceY) {
 			chunk.setBlocks(x, subsurfaceY, y - 2, z, subSandId);
 			chunk.setBlocks(x, y - 2, y, z, sandId);
+			if (odds.getRandomDouble() < .02) {
+				chunk.setBlocks(x, y - 6, y - 3, z, logId);
+			}
+
 		}
 	}
 	
@@ -148,6 +152,7 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 //	private final static Material sandMat = Material.GLASS;
 	private final static byte sandId = (byte) sandMat.getId();
 	private final static byte subSandId = (byte) Material.SANDSTONE.getId();
+	private final static byte logId = (byte) Material.LOG.getId();
 //	private final static byte subSandId = sandId;
 	
 	@Override

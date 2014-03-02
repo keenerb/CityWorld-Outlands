@@ -78,6 +78,7 @@ public class FarmLot extends ConnectedLot {
 	protected final static Material soilMaterial = Material.SOIL;
 	protected final static Material sandMaterial = Material.SAND;
 	protected final static Material mycelMaterial = Material.MYCEL;
+	protected final static Material decayedDirtMaterial = Material.SANDSTONE;
 	protected final static Material dirtMaterial = Material.DIRT;
 	protected final static Material soulMaterial = Material.SOUL_SAND;
 	protected final static Material trellisMaterial = Material.WOOD;
@@ -98,7 +99,9 @@ public class FarmLot extends ConnectedLot {
 	protected final static Material cropRedMushroom = Material.RED_MUSHROOM;
 	protected final static Material cropNetherwart = Material.NETHER_WARTS;
 	protected final static Material cropDeadBush = Material.DEAD_BUSH; 
+	protected final static Material cropDecayedNone = Material.SAND;
 	protected final static Material cropNone = Material.DIRT;
+	
 	protected final static Material cropCarrot = Material.CARROT;
 	protected final static Material cropPotato = Material.POTATO;
 	
@@ -183,7 +186,9 @@ public class FarmLot extends ConnectedLot {
 		
 		boolean fallowField = cropType == cropFallow;
 		Material fallowMaterial = getAirMaterial(generator, croplevel - 1);
-		
+		if (generator.settings.includeDecayedNature)
+			cropType = cropNone;
+			
 		// waterless crops
 		if (cropType == cropCactus)
 			plowField(generator, chunk, chunkOdds, croplevel, sandMaterial, 0, sandMaterial, cropType, 0, 2, 2, 3);
@@ -214,12 +219,21 @@ public class FarmLot extends ConnectedLot {
 				else if (cropType == cropSugarCane)
 					plowField(generator, chunk, chunkOdds, croplevel, sandMaterial, 0, waterMaterial, cropType, 0, 1, 2, 3);
 				else if (cropType == cropNone)
-					plowField(generator, chunk, chunkOdds, croplevel, soilMaterial, 8, waterMaterial, getAirMaterial(generator, croplevel - 1), 0, 1, 2, 1);
+					if (generator.settings.includeDecayedNature) { 
+					plowField(generator, chunk, chunkOdds, croplevel, sandMaterial, 8, decayedDirtMaterial, getAirMaterial(generator, croplevel - 1), 0, 1, 2, 1);
+					} else {
+						plowField(generator, chunk, chunkOdds, croplevel, soilMaterial, 8, waterMaterial, getAirMaterial(generator, croplevel - 1), 0, 1, 2, 1);
+					}
 				else
 					fallowField = true;
 			} else {
 				if (cropType == cropNone)
-					plowField(generator, chunk, chunkOdds, croplevel, dirtMaterial, 0, fallowMaterial, getAirMaterial(generator, croplevel - 1), 0, 1, 2, 1);
+					if (generator.settings.includeDecayedNature) {
+						plowField(generator, chunk, chunkOdds, croplevel, decayedDirtMaterial, 0, sandMaterial, getAirMaterial(generator, croplevel - 1), 0, 1, 2, 1);
+					} else {
+						plowField(generator, chunk, chunkOdds, croplevel, dirtMaterial, 0, fallowMaterial, getAirMaterial(generator, croplevel - 1), 0, 1, 2, 1);
+					}
+					
 				else
 					fallowField = true;
 			}
@@ -227,7 +241,11 @@ public class FarmLot extends ConnectedLot {
 		
 		// just in case nothing happened
 		if (fallowField)
-			plowField(generator, chunk, chunkOdds, croplevel, dirtMaterial, 0, fallowMaterial, cropType, 0, 1, 2, 1);
+			if (generator.settings.includeDecayedNature) {
+				plowField(generator, chunk, chunkOdds, croplevel, decayedDirtMaterial, 0, sandMaterial, cropDeadBush, 0, 1, 2, 1);
+			} else {
+				plowField(generator, chunk, chunkOdds, croplevel, dirtMaterial, 0, fallowMaterial, cropType, 0, 1, 2, 1);
+			}
 	}
 
 	private void plowField(WorldGenerator generator, RealChunk chunk, Odds odds, int croplevel, 

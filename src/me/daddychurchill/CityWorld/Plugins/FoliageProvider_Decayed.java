@@ -28,7 +28,9 @@ public class FoliageProvider_Decayed extends FoliageProvider {
 			switch (herbaceousType) {
 			case GRASS:
 			case FERN:
+				if (odds.getRandomDouble() > .1) {
 				chunk.setBlock(x, y, z, Material.DEAD_BUSH);
+				}
 				return true;
 			case COVER:
 			case CACTUS:

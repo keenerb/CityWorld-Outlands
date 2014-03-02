@@ -70,7 +70,7 @@ public class Odds {
 	}
 	
 	public byte getRandomCauldronLevel() {
-		return getRandomByte((byte)4);
+		return getRandomByte((byte)2);
 	}
 	
 	public byte getRandomWoodType() {

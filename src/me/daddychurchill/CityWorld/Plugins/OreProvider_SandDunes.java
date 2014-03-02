@@ -12,6 +12,8 @@ public class OreProvider_SandDunes extends OreProvider_Normal {
 		fluidSurfaceId = sandId;
 		fluidSubsurfaceId = sandstoneId;
 		fluidFrozenId = snowBlockId;
+		surfaceId = sandId;
+		subsurfaceId = sandstoneId;
 	}
 
 	@Override
