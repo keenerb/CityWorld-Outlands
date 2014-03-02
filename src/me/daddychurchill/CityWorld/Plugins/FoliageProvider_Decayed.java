@@ -29,7 +29,12 @@ public class FoliageProvider_Decayed extends FoliageProvider {
 			case GRASS:
 			case FERN:
 				if (odds.getRandomDouble() > .1) {
-				chunk.setBlock(x, y, z, Material.DEAD_BUSH);
+					switch (generator.worldStyle) {
+					case SNOWDUNES:
+						break;
+					default:
+						chunk.setBlock(x, y, z, Material.DEAD_BUSH);
+					}
 				}
 				return true;
 			case COVER:

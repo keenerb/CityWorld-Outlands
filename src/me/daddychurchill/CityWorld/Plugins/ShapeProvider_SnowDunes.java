@@ -44,7 +44,7 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 	public ShapeProvider_SnowDunes(WorldGenerator generator, Odds odds) {
 		super(generator, odds);
 		
-		floodY = seaLevel + 15;
+		floodY = seaLevel + 8;
 
 		long seed = generator.getWorldSeed();
 		duneFeature1 = new SimplexOctaveGenerator(seed + 20, featureOctaves);
