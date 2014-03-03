@@ -40,8 +40,8 @@ public class OreProvider_Normal extends OreProvider {
 													  }; 
 	
 	//                                                         WATER   LAVA   GRAV   COAL   IRON   GOLD  LAPIS  REDST   DIAM   EMER  
-	private static final int[] ore_iterations = new int[]    {     1,     6,    40,    30,    12,     4,     2,     4,     2,    10};
-	private static final int[] ore_amountToDo = new int[]    {     1,     1,    12,     8,     8,     3,     3,    10,     3,     1};
+	private static final int[] ore_iterations = new int[]    {     1,     6,    40,    15,    12,     4,     2,     4,     2,    2};
+	private static final int[] ore_amountToDo = new int[]    {     1,     1,    12,     8,     8,     3,     3,    5,     2,     1};
 	private static final int[] ore_maxY = new int[]          {   8,    32,   111,   128,    61,    29,    25,    16,    15,    32};
 	private static final int[] ore_minY = new int[]          {    2,     2,    40,    16,    10,     8,     8,     6,     2,     2};
 	private static final boolean[] ore_upper = new boolean[] {  true, false, false,  true,  true,  true,  true,  true, false, false};
