@@ -8,10 +8,10 @@ public class OreProvider_SnowDunes extends OreProvider_Normal {
 	public OreProvider_SnowDunes(WorldGenerator generator) {
 		super(generator);
 
-		fluidId = iceId;
-		fluidFluidId = iceId;
-		surfaceId = sandId;
-		subsurfaceId = sandstoneId;
+		fluidId = snowBlockId;
+		fluidFluidId = snowBlockId;
+		surfaceId = snowBlockId;
+		subsurfaceId = stoneId;
 	}
 
 	@Override
