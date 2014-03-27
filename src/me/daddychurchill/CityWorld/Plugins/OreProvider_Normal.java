@@ -27,7 +27,8 @@ public class OreProvider_Normal extends OreProvider {
 	 * wildly modified by daddychurchill
 	 */
 	
-	private static final int[] ore_types = new int[] {Material.WATER.getId(),
+	private static final int[] ore_types = new int[] {Material.DIRT.getId(),
+                                                      Material.WATER.getId(),
 													  Material.LAVA.getId(),
 		  											  Material.GRAVEL.getId(), 
 													  Material.COAL_ORE.getId(),
@@ -39,14 +40,14 @@ public class OreProvider_Normal extends OreProvider {
 													  Material.EMERALD_ORE.getId()
 													  }; 
 	
-	//                                                         WATER   LAVA   GRAV   COAL   IRON   GOLD  LAPIS  REDST   DIAM   EMER  
-	private static final int[] ore_iterations = new int[]    {     1,     6,    40,    15,    12,     4,     2,     4,     2,    2};
-	private static final int[] ore_amountToDo = new int[]    {     1,     1,    12,     8,     8,     3,     3,    5,     2,     1};
-	private static final int[] ore_maxY = new int[]          {   8,    32,   111,   128,    61,    29,    25,    16,    15,    32};
-	private static final int[] ore_minY = new int[]          {    2,     2,    40,    16,    10,     8,     8,     6,     2,     2};
-	private static final boolean[] ore_upper = new boolean[] {  true, false, false,  true,  true,  true,  true,  true, false, false};
-	private static final boolean[] ore_physics = new boolean[] {true,  true, false, false, false, false, false, false, false, false};
-	private static final boolean[] ore_liquid = new boolean[] { true,  true, false, false, false, false, false, false, false, false};
+	//                                                         DIRT WATER   LAVA   GRAV   COAL   IRON   GOLD  LAPIS  REDST   DIAM   EMER  
+	private static final int[] ore_iterations = new int[]    {     1,     1,     6,    40,    15,    12,     4,     2,     4,     2,    2};
+	private static final int[] ore_amountToDo = new int[]    {     2,     1,     1,    12,     8,     8,     3,     3,    5,     2,     1};
+	private static final int[] ore_maxY = new int[]          {   256,     8,    32,   111,   128,    61,    29,    25,    16,    15,    32};
+	private static final int[] ore_minY = new int[]          {     2,     2,     2,    40,    16,    10,     8,     8,     6,     2,     2};
+	private static final boolean[] ore_upper = new boolean[] {  false, true, false, false,  true,  true,  true,  true,  true, false, false};
+	private static final boolean[] ore_physics = new boolean[] {false, true,  true, false, false, false, false, false, false, false, false};
+	private static final boolean[] ore_liquid = new boolean[] { false, true,  true, false, false, false, false, false, false, false, false};
 	
 	@Override
 	public void sprinkleOres(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs, Odds odds, OreLocation location) {
