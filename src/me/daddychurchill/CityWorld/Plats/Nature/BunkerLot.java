@@ -75,6 +75,7 @@ public class BunkerLot extends ConstructLot {
 	private final static byte iceId = (byte) Material.ICE.getId();
 	private final static byte spongeId = (byte) Material.SPONGE.getId();
 	private final static byte oilId = (byte) TekkitMaterial.STATIONARY_OIL;
+	private final static byte airId = (byte) Material.AIR.getId();
 	
 	//private final static int bilgeEmpty = 0;
 	private final static int bilgeWater = 1;
@@ -131,15 +132,20 @@ public class BunkerLot extends ConstructLot {
 		// clear out stuff?
 		switch (bilgeType) {
 		case bilgeWater:
+			if(!generator.settings.includeDecayedNature) {
 			chunk.setLayer(yBottom + 1, waterId);
 //			chunk.setBlocks(0, 16, yBottom + 2, yTop3, 0, 16, airId);
+			}
 			break;
+			
 		case bilgeLava:
 			chunk.setLayer(yBottom + 1, lavaId);
 //			chunk.setBlocks(0, 16, yBottom + 2, yTop3, 0, 16, airId);
 			break;
 		case bilgeIce:
+			if(!generator.settings.includeDecayedNature) {
 			chunk.setLayer(yBottom + 1, iceId);
+			}
 //			chunk.setBlocks(0, 16, yBottom + 2, yTop3, 0, 16, airId);
 			break;
 		default: // bilgeEmpty:
@@ -420,13 +426,15 @@ public class BunkerLot extends ConstructLot {
 		chunk.setBlocks(x1, x2, yTop, yTop + 1, z1, z2, buildingId);
 		
 		// fill it
-		byte fillId;
+		byte fillId = 0;
 		switch (chunkOdds.getRandomInt(6)) {
 		case 1:
 			fillId = lavaId;
 			break;
 		case 2:
+			if(!generator.settings.includeDecayedNature) {
 			fillId = iceId;
+			}
 			break;
 		case 3:
 			fillId = snowId;
@@ -437,10 +445,17 @@ public class BunkerLot extends ConstructLot {
 		case 5:
 			if (generator.settings.includeTekkitMaterials) { // tekkit support by gunre
 				fillId = oilId;
+			}
 				break;
-			} // else just fill with some more water
+			 // else just fill with some more water
 		default:
+			if(!generator.settings.includeDecayedNature) {
 			fillId = waterId;
+			}
+			else
+			{
+				fillId = airId;
+			}
 			break;
 		}
 		chunk.setBlocks(x1, x2, yBottom + 1, yBottom + ((yTop - yBottom) / 3) * 2, z1, z2, fillId);

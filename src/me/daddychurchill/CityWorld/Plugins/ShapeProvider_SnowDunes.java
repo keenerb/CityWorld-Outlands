@@ -109,7 +109,7 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 	private final static Material snowMat = Material.SNOW_BLOCK;
 //	private final static Material snowMat = Material.GLASS;
 	private final static byte snowId = (byte) snowMat.getId();
-	private final static byte snowCoverId = (byte) Material.SNOW.getId();
+	private final static byte snowCoverId = (byte) Material.AIR.getId();
 	
 	@Override
 	public byte findAtmosphereIdAt(WorldGenerator generator, int blockY) {
