@@ -986,8 +986,12 @@ public class RoadLot extends ConnectedLot {
 				centerWest = sewerCenterBit || (vaultNorthWest && vaultSouthWest);
 				centerEast = sewerCenterBit || (vaultNorthEast && vaultSouthEast);
 			}
-			
+
 			byte fluidId = generator.oreProvider.fluidFluidId;
+			
+			if(generator.settings.includeDecayedNature) {
+				fluidId = (byte) Material.AIR.getId();
+			}
 			
 			// cardinal directions known walls and ditches
 			if (roads.toNorth()) {

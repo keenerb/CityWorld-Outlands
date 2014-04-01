@@ -468,11 +468,11 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		case 14:
 			return Material.STAINED_CLAY;
 		case 15:
-			return Material.STONE;
+			return Material.SANDSTONE;
 		case 16:
 			return Material.ENDER_STONE;
 		default:
-			return Material.STONE;
+			return Material.COBBLESTONE;
 		}
 	}
 
