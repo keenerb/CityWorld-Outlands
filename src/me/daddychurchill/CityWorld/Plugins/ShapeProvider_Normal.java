@@ -212,7 +212,11 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	
 	@Override
 	protected Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome) {
+		if (generator.settings.includeDecayedNature) {
+			return Biome.DESERT_HILLS;
+		} else {
 		return generator.oreProvider.remapBiome(biome);
+		}
 	}
 
 	@Override

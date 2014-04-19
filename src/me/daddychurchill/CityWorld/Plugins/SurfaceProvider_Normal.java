@@ -26,9 +26,12 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 		// roll the dice
 		double primary = odds.getRandomDouble();
 		double secondary = odds.getRandomDouble();
-		
+		double treeOdds2 = treeOdds;
+		if (generator.settings.includeDecayedNature) {
+			treeOdds2 = treeOdds2/2;
+		}
 		// top of the world?
-		if (y >= generator.snowLevel) {
+		if (y >= generator.snowLevel && !generator.settings.includeDecayedNature) {
 			ores.dropSnow(generator, chunk, x, y, z, (byte) NoiseGenerator.floor((perciseY - Math.floor(perciseY)) * 8.0));
 		
 		// are on a plantable spot?
@@ -53,7 +56,7 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 			} else if (y < generator.treeLevel) {
 
 				// trees? but only if we are not too close to the edge of the chunk
-				if (includeTrees && primary < treeOdds && x > 0 && x < 15 && z > 0 && z < 15 && x % 2 == 0 && z % 2 != 0) {
+				if (includeTrees && primary < treeOdds2 && x > 0 && x < 15 && z > 0 && z < 15 && x % 2 == 0 && z % 2 != 0) {
 					if (secondary < treeAltTallOdds && x > 5 && x < 11 && z > 5 && z < 11)
 						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_OAK);
 					else if (secondary < treeAltOdds)
@@ -77,7 +80,7 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 			} else if (y < generator.evergreenLevel) {
 
 				// trees? 
-				if (includeTrees && primary < treeOdds && x % 2 == 0 && z % 2 != 0) {
+				if (includeTrees && primary < treeOdds2 && x % 2 == 0 && z % 2 != 0) {
 					
 					// range change?
 					if (secondary > ((double) (y - generator.treeLevel) / (double) generator.deciduousRange))
@@ -99,7 +102,7 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 			} else if (y < generator.snowLevel) {
 				
 				// trees? 
-				if (includeTrees && primary < treeOdds && x % 2 == 0 && z % 2 != 0) {
+				if (includeTrees && primary < treeOdds2 && x % 2 == 0 && z % 2 != 0) {
 					if (secondary < treeTallOdds)
 						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.PINE);
 					else

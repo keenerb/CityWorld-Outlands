@@ -219,7 +219,9 @@ public abstract class PlatLot {
 	private void generateHorizontalMineLevel(WorldGenerator generator, ByteChunk chunk, int y) {
 		int y1 = y + 6;
 		int y2 = y1 + 1;
-		
+		if (y < 50) {
+			return;
+		}
 		// draw the shafts/walkways
 		boolean pathFound = false;
 		if (generator.shapeProvider.isHorizontalNSShaft(chunk.chunkX, y, chunk.chunkZ)) {
