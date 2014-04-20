@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plats.Nature;
 
+import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
@@ -39,5 +40,6 @@ public class MountainShackLot extends MountainFlatLot {
 		// not a happy place?
 		if (generator.settings.includeDecayedBuildings)
 			destroyBuilding(generator, generator.streetLevel + 1, floors);
+		chunk.setBlock(8, 2, 8, Material.BEDROCK);
 	}
 }

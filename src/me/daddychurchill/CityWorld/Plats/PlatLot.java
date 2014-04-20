@@ -18,6 +18,8 @@ import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.RealChunk;
 import me.daddychurchill.CityWorld.Support.SupportChunk;
 
+
+
 public abstract class PlatLot {
 	
 	// extremes
@@ -219,7 +221,7 @@ public abstract class PlatLot {
 	private void generateHorizontalMineLevel(WorldGenerator generator, ByteChunk chunk, int y) {
 		int y1 = y + 6;
 		int y2 = y1 + 1;
-		if (y < 50) {
+		if (y1 < 50) {
 			return;
 		}
 		// draw the shafts/walkways
@@ -498,7 +500,6 @@ public abstract class PlatLot {
 	}
 	
 	public void generateOres(WorldGenerator generator, RealChunk chunk) {
-		
 		// shape the world
 		if (generator.settings.includeOres || generator.settings.includeUndergroundFluids)
 			generator.oreProvider.sprinkleOres(generator, this, chunk, blockYs, chunkOdds, OreLocation.CRUST);

@@ -22,7 +22,7 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 	protected Material stairWallMaterial;
 	protected Material doorMaterial;
 	protected Material roofMaterial;
-	
+	protected Material idMaterial;
 	//TODO columns height
 	protected int insetWallWE;
 	protected int insetWallNS;
@@ -79,6 +79,7 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		stairPlatformMaterial = pickStairPlatformMaterial(stairMaterial);
 		doorMaterial = Material.WOOD_DOOR;
 		roofMaterial = pickRoofMaterial();
+		idMaterial = Material.IRON_ORE;
 		
 		// what are the walls of the stairs made of?
 		if (chunkOdds.playOdds(context.oddsOfStairWallMaterialIsWallMaterial))
@@ -198,7 +199,8 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		// bottom most floor
 		drawCeilings(generator, chunk, context, lowestY, 1, 0, 0, false, ceilingMaterial, neighborBasements);
 		//chunk.setBlocks(0, chunk.width, lowestY, lowestY + 1, 0, chunk.width, (byte) ceilingMaterial.getId());
-		
+
+		chunk.setBlock(15, 1, 15, Material.BEDROCK);
 		// below ground
 		if (depth > 0) {
 			for (int floor = 0; floor < depth; floor++) {

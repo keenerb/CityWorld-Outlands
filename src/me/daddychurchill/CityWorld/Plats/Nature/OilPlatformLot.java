@@ -196,6 +196,7 @@ public class OilPlatformLot extends ConstructLot {
 //				decayEdge(blocks, chunk.getBlockX(inset), y, chunk.getBlockZ(7) + chunkRandom.nextInt(3) - 1);
 //				decayEdge(blocks, chunk.getBlockX(chunk.width - inset - 1), y, chunk.getBlockZ(8) + chunkRandom.nextInt(3) - 1);
 //			}
+		chunk.setBlock(10, 2, 10, Material.BEDROCK);
 	}
 
 	private final static double decayedEdgeOdds = 0.25;

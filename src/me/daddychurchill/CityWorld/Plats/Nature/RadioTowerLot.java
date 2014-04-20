@@ -126,6 +126,7 @@ public class RadioTowerLot extends ConstructLot {
 			generateAntenna(chunk, context, originX + platformWidth - 2, platformY, originZ + 1, false);
 			generateAntenna(chunk, context, originX + platformWidth - 2, platformY, originZ + platformWidth - 2, true);
 		}
+		chunk.setBlock(12, 2, 12, Material.BEDROCK);
 	}
 	
 	private void generateAntenna(RealChunk chunk, DataContext context, int x, int y, int z, boolean lastChance) {

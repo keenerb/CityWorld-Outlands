@@ -15,6 +15,8 @@ public class OreProvider_Decayed extends OreProvider_Normal {
 		subsurfaceId = sandstoneId;
 	}
 
+	
+
 	@Override
 	public String getCollectionName() {
 		return "Decayed";

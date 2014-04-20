@@ -208,6 +208,7 @@ public class UnfinishedBuildingLot extends BuildingLot {
 				}
 			}
 		}
+		chunk.setBlock(5, 2, 5, Material.BEDROCK);
 	}
 	
 	protected boolean drawCrane(WorldGenerator generator, RealChunk chunk, DataContext context) {

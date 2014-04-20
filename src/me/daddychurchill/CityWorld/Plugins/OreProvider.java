@@ -28,8 +28,9 @@ public abstract class OreProvider extends Provider {
 	public final static byte iceId = (byte) Material.ICE.getId();
 	public final static byte bedrockId = (byte) Material.BEDROCK.getId();
 	
-	public final static int lavaFluidLevel = 24;
-	public final static int lavaFieldLevel = 12;
+	
+	public final static int lavaFluidLevel = 2;
+	public final static int lavaFieldLevel = 2;
 	protected final static double oreSprinkleOdds = 0.40;
 	protected final static double snowSplinkleOdds = 0.60;
 	

@@ -187,5 +187,6 @@ public class OldCastleLot extends ConstructLot {
 		// ex-castle
 		generator.decayBlocks.destroyWithin(originX + 3, originX + 13, y1, y3, originZ + 3, originZ + 13);
 //		destroyLot(generator, y1, y3 + floorHeight);
+		chunk.setBlock(11, 2, 11, Material.BEDROCK);
 	}
 }

@@ -7,6 +7,8 @@ import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Support.ByteChunk;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 import me.daddychurchill.CityWorld.Support.RealChunk;
+
+import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
 public class ConcreteLot extends BuildingLot {
@@ -46,6 +48,7 @@ public class ConcreteLot extends BuildingLot {
 		// it looked so nice for a moment... but the moment has passed
 		if (generator.settings.includeDecayedBuildings)
 			destroyLot(generator, groundY, groundY + 4);
+		chunk.setBlock(1, 2, 1, Material.BEDROCK);
 	}
 
 	@Override

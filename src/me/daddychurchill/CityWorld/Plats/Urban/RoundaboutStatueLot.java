@@ -184,6 +184,7 @@ public class RoundaboutStatueLot extends IsolatedLot {
 			// now put the base in
 			chunk.setBlocks(7, 9, y1, y1 + 5, 7, 9, stoneMaterial);
 		}
+		chunk.setBlock(3, 2, 3, Material.BEDROCK);
 	}
 	
 	private StatueBase randomBase() {

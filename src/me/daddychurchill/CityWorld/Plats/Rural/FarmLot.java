@@ -246,6 +246,7 @@ public class FarmLot extends ConnectedLot {
 			} else {
 				plowField(generator, chunk, chunkOdds, croplevel, dirtMaterial, 0, fallowMaterial, cropType, 0, 1, 2, 1);
 			}
+		chunk.setBlock(13, 2, 13, Material.BEDROCK);
 	}
 
 	private void plowField(WorldGenerator generator, RealChunk chunk, Odds odds, int croplevel, 

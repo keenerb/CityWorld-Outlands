@@ -589,6 +589,7 @@ public class RoadLot extends ConnectedLot {
 			// ceiling please
 			chunk.setLayer(base2Y, 2, sewerCeilingId);
 		}
+		chunk.setBlock(1, 2, 2, Material.BEDROCK);
 	}
 	
 	protected void generateNSCrosswalk(ByteChunk chunk, int x1, int x2, int y, int z1, int z2) {

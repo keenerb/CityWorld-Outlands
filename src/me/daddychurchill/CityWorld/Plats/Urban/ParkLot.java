@@ -242,5 +242,7 @@ public class ParkLot extends ConnectedLot {
 			generator.foliageProvider.generateTree(generator, chunk, 3, surfaceY, 12, ligneousType);
 			generator.foliageProvider.generateTree(generator, chunk, 12, surfaceY, 12, ligneousType);
 		}
+
+		chunk.setBlock(2, 2, 2, Material.BEDROCK);
 	}
 }
