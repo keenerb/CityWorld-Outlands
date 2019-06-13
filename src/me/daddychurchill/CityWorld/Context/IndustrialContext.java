@@ -1,8 +1,9 @@
 package me.daddychurchill.CityWorld.Context;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Clipboard.PasteProvider.SchematicFamily;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
+import me.daddychurchill.CityWorld.Plats.Urban.FactoryBuildingLot;
 import me.daddychurchill.CityWorld.Plats.Urban.StorageLot;
 import me.daddychurchill.CityWorld.Plats.Urban.WarehouseBuildingLot;
 import me.daddychurchill.CityWorld.Support.Odds;
@@ -10,52 +11,44 @@ import me.daddychurchill.CityWorld.Support.PlatMap;
 
 public class IndustrialContext extends UrbanContext {
 
-	public IndustrialContext(WorldGenerator generator) {
+	public IndustrialContext(CityWorldGenerator generator) {
 		super(generator);
-	}
-	
-	@Override
-	protected void initialize() {
-		super.initialize();
 
-		oddsOfParks = oddsUnlikely;
-		oddsOfIsolatedLots = oddsVeryUnlikely;
-		oddsOfIdenticalBuildingHeights = oddsAlwaysGoingToHappen;
-		oddsOfSimilarBuildingHeights = oddsExtremelyLikely;
-		oddsOfSimilarBuildingRounding = oddsNeverGoingToHappen;
-		oddsOfUnfinishedBuildings = oddsNeverGoingToHappen;
-		oddsOfOnlyUnfinishedBasements = oddsNeverGoingToHappen;
+		oddsOfParks = Odds.oddsUnlikely;
+		oddsOfIsolatedLots = Odds.oddsPrettyUnlikely;
+		oddsOfIdenticalBuildingHeights = Odds.oddsAlwaysGoingToHappen;
+		oddsOfSimilarBuildingHeights = Odds.oddsExtremelyLikely;
+		oddsOfSimilarBuildingRounding = Odds.oddsNeverGoingToHappen;
+		oddsOfUnfinishedBuildings = Odds.oddsNeverGoingToHappen;
+		oddsOfOnlyUnfinishedBasements = Odds.oddsNeverGoingToHappen;
 		//oddsOfMissingRoad = oddsNeverGoingToHappen;
-		oddsOfRoundAbouts = oddsUnlikely;
+		oddsOfRoundAbouts = Odds.oddsUnlikely;
 		 
-		oddsOfStairWallMaterialIsWallMaterial = oddsExtremelyLikely;
-		oddsOfBuildingWallInset = oddsExtremelyLikely;
-		oddsOfFlatWalledBuildings = oddsExtremelyLikely;
-		oddsOfSimilarInsetBuildings = oddsExtremelyLikely;
+		oddsOfStairWallMaterialIsWallMaterial = Odds.oddsExtremelyLikely;
+		oddsOfBuildingWallInset = Odds.oddsExtremelyLikely;
+		oddsOfFlatWalledBuildings = Odds.oddsExtremelyLikely;
+		oddsOfSimilarInsetBuildings = Odds.oddsExtremelyLikely;
 		rangeOfWallInset = 2;
 		
-		schematicFamily = SchematicFamily.INDUSTRIAL;
+		setSchematicFamily(SchematicFamily.INDUSTRIAL);
 
 		maximumFloorsAbove = 2;
 		maximumFloorsBelow = 1;
 	}
 	
-	private final static double oddsOfStorageLot = DataContext.oddsVeryLikely;
-	private final static double oddsOfWarehouse = DataContext.oddsVeryLikely;
-	
 	@Override
-	protected PlatLot getPark(WorldGenerator generator, PlatMap platmap, Odds odds, int chunkX, int chunkZ) {
-		if (odds.playOdds(oddsOfStorageLot))
+	protected PlatLot getPark(CityWorldGenerator generator, PlatMap platmap, Odds odds, int chunkX, int chunkZ, int waterDepth) {
+		if (odds.playOdds(Odds.oddsLikely))
 			return new StorageLot(platmap, chunkX, chunkZ);
 		else
-			return super.getPark(generator, platmap, odds, chunkX, chunkZ);
+			return new FactoryBuildingLot(platmap, chunkX, chunkZ);
 	}
 	
 	@Override
-	protected PlatLot getBuilding(WorldGenerator generator, PlatMap platmap, Odds odds, int chunkX, int chunkZ) {
-		if (odds.playOdds(oddsOfWarehouse))
+	protected PlatLot getBuilding(CityWorldGenerator generator, PlatMap platmap, Odds odds, int chunkX, int chunkZ) {
+		if (odds.playOdds(Odds.oddsSomewhatLikely))
 			return new WarehouseBuildingLot(platmap, chunkX, chunkZ);
 		else
-			return super.getBuilding(generator, platmap, odds, chunkX, chunkZ);
+			return new FactoryBuildingLot(platmap, chunkX, chunkZ);
 	}
 }

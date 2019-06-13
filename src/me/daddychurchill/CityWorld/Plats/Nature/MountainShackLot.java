@@ -1,14 +1,13 @@
 package me.daddychurchill.CityWorld.Plats.Nature;
 
-import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.RealChunk;
+import me.daddychurchill.CityWorld.Support.RealBlocks;
 
 public class MountainShackLot extends MountainFlatLot {
 
@@ -23,8 +22,8 @@ public class MountainShackLot extends MountainFlatLot {
 	}
 
 	@Override
-	protected void generateActualChunk(WorldGenerator generator,
-			PlatMap platmap, ByteChunk chunk, BiomeGrid biomes,
+	protected void generateActualChunk(CityWorldGenerator generator,
+			PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes,
 			DataContext context, int platX, int platZ) {
 		
 		// empty it out and add the retainer wall, as needed
@@ -32,14 +31,18 @@ public class MountainShackLot extends MountainFlatLot {
 	}
 
 	@Override
-	protected void generateActualBlocks(WorldGenerator generator, PlatMap platmap, RealChunk chunk, DataContext context, int platX, int platZ) {
+	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
+		reportLocation(generator, "Shack", chunk);
 
 		// now make a shack
-		int floors = generator.houseProvider.generateShack(generator, chunk, context, chunkOdds, averageHeight + 1, 5);
+		int atY = blockYs.averageHeight + 1;
+		int floors = generator.structureOnGroundProvider.generateRuralShack(generator, chunk, context, chunkOdds, atY, 5);
 		
 		// not a happy place?
 		if (generator.settings.includeDecayedBuildings)
-			destroyBuilding(generator, generator.streetLevel + 1, floors);
-		chunk.setBlock(8, 2, 8, Material.BEDROCK);
+			destroyBuilding(generator, atY, floors);
+		else
+			generateSurface(generator, chunk, false);
+		generator.spawnProvider.spawnBeing(generator, chunk, chunkOdds, 5, atY, 5);
 	}
 }

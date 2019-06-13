@@ -1,6 +1,7 @@
 package me.daddychurchill.CityWorld.Plugins;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorld;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.ConstructionContext;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Context.FarmContext;
@@ -11,15 +12,17 @@ import me.daddychurchill.CityWorld.Context.MidriseContext;
 import me.daddychurchill.CityWorld.Context.MunicipalContext;
 import me.daddychurchill.CityWorld.Context.NatureContext;
 import me.daddychurchill.CityWorld.Context.NeighborhoodContext;
+import me.daddychurchill.CityWorld.Context.OutlandContext;
 import me.daddychurchill.CityWorld.Context.ParkContext;
 import me.daddychurchill.CityWorld.Context.RoadContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot.LotStyle;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.CachedYs;
 import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.RealChunk;
+import me.daddychurchill.CityWorld.Support.RealBlocks;
+
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
@@ -37,6 +40,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	public DataContext lowriseContext;
 	public DataContext neighborhoodContext;
 	public DataContext farmContext;
+	public DataContext outlandContext;
 	
 	public SimplexOctaveGenerator landShape1;
 	public SimplexOctaveGenerator landShape2;
@@ -86,7 +90,9 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	public final static double mineScale = 1.0 / 4.0;
 	public final static double mineScaleY = mineScale;
 
-	public ShapeProvider_Normal(WorldGenerator generator, Odds odds) {
+	protected final static double oddsOfCentralPark = Odds.oddsUnlikely;
+	
+	public ShapeProvider_Normal(CityWorldGenerator generator, Odds odds) {
 		super(generator, odds);
 		World world = generator.getWorld();
 		long seed = generator.getWorldSeed();
@@ -115,45 +121,12 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	}
 	
 	@Override
-	public void populateLots(WorldGenerator generator, PlatMap platmap) {
-		try {
-			allocateContexts(generator);
-
-			// assume everything is natural for the moment
-			platmap.context = natureContext;
-			natureContext.populateMap(generator, platmap);
-			natureContext.validateMap(generator, platmap);
-			
-			// place and validate the roads
-			if (generator.settings.includeRoads) {
-				platmap.populateRoads();
-				platmap.validateRoads();
-	
-				// place the buildings
-				if (generator.settings.includeBuildings) {
-		
-					// recalculate the context based on the "natural-ness" of the platmap
-					platmap.context = getContext(platmap);
-					platmap.context.populateMap(generator, platmap);
-					platmap.context.validateMap(generator, platmap);
-				}
-				
-				// one last check
-				validateLots(generator, platmap);
-			}
-		} catch (Exception e) {
-			generator.reportException("NormalMap.populateLots FAILED", e);
-
-		} 
-	}
-	
-	@Override
-	protected void validateLots(WorldGenerator generator, PlatMap platmap) {
+	protected void validateLots(CityWorldGenerator generator, PlatMap platmap) {
 		// nothing to do in this one
 	}
 	
 	@Override
-	protected void allocateContexts(WorldGenerator generator) {
+	protected void allocateContexts(CityWorldGenerator generator) {
 		if (!contextInitialized) {
 			natureContext = new NatureContext(generator);
 			roadContext = new RoadContext(generator);
@@ -167,63 +140,115 @@ public class ShapeProvider_Normal extends ShapeProvider {
 			lowriseContext = new LowriseContext(generator);
 			neighborhoodContext = new NeighborhoodContext(generator);
 			farmContext = new FarmContext(generator);
+			outlandContext = new OutlandContext(generator);
 			
 			contextInitialized = true;
 		}
 	}
 	
-	private final static double oddsOfCentralPark = DataContext.oddsUnlikely;
-	protected DataContext getContext(PlatMap platmap) {
-		
+	@Override
+	public DataContext getContext(int originX, int originZ) {
+		CityWorld.log.info("IF YOU SEE THIS MESSAGE PLEASE SEND ME EMAIL AT eddie@virtualchurchill.com, THANKS");
+		return null;
+	}
+	
+	@Override
+	public DataContext getContext(PlatMap platmap) {
+//		DataContext context = internalGetContext(platmap);
+//		if (context == null)
+//			CityWorld.log.info("GET SCHEMATIC FAMILY = NULL");
+//		else
+//			CityWorld.log.info("GET CONTEXT SCHEMATIC FAMILY = " + context.getSchematicFamily().toString());
+//		
+//		return context;
+//	}
+//	
+//	public DataContext internalGetContext(PlatMap platmap) {
+	
 		// how natural is this platmap?
-		float nature = platmap.getNaturePercent();
+		double nature = platmap.getNaturePercent();
 		if (nature == 0.0) {
 			if (platmap.getOddsGenerator().playOdds(oddsOfCentralPark))
 				return parkContext;
 			else
 				return highriseContext;
 		}
-		else if (nature < 0.15)
+
+		else if (nature < 0.05)				// 5
+			return highriseContext;
+		else if (nature < 0.10)				// 5
 			return constructionContext;
-		else if (nature < 0.25)
-			return midriseContext;
-		else if (nature < 0.37)
+		else if (nature < 0.15)				// 5
 			return municipalContext;
-		else if (nature < 0.50)
+		else if (nature < 0.25)				// 10
+			return midriseContext;
+		else if (nature < 0.30)				// 5
 			return industrialContext;
-		else if (nature < 0.65)
+		else if (nature < 0.40)				// 10
 			return lowriseContext;
-		else if (nature < 0.75)
+		else if (nature < 0.55)				// 15
 			return neighborhoodContext;
-		else if (nature < 0.90 && platmap.generator.settings.includeFarms)
+		else if (nature < 0.70 && platmap.generator.settings.includeFarms) // 10
 			return farmContext;
-		else if (nature < 1.0)
-			return neighborhoodContext;
+		else if (nature < 0.75)				// 5
+			return outlandContext;
+
 		
 		// otherwise just keep what we have
 		else
 			return natureContext;
 	}
 
+	// second attempt
+//	else if (nature < 0.05)
+//		return constructionContext;
+//	else if (nature < 0.10)
+//		return midriseContext;
+//	else if (nature < 0.20)
+//		return municipalContext;
+//	else if (nature < 0.30)
+//		return industrialContext;
+//	else if (nature < 0.40)
+//		return lowriseContext;
+//	else if (nature < 0.50)
+//		return neighborhoodContext;
+//	else if (nature < 0.65 && platmap.generator.settings.includeFarms)
+//		return farmContext;
+//	else if (nature < 0.80)
+//		return outlandContext;
+
+//original dist
+//	else if (nature < 0.15)
+//		return constructionContext;
+//	else if (nature < 0.25)
+//		return midriseContext;
+//	else if (nature < 0.37)
+//		return municipalContext;
+//	else if (nature < 0.50)
+//		return industrialContext;
+//	else if (nature < 0.65)
+//		return lowriseContext;
+//	else if (nature < 0.75)
+//		return neighborhoodContext;
+//	else if (nature < 0.90 && platmap.generator.settings.includeFarms)
+//		return farmContext;
+//	else if (nature < 1.0)
+//		return outlandContext;
 	@Override
 	public String getCollectionName() {
 		return "Normal";
 	}
 	
 	@Override
-	protected Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome) {
-		if (generator.settings.includeDecayedNature) {
-			return Biome.DESERT_HILLS;
-		} else {
+	protected Biome remapBiome(CityWorldGenerator generator, PlatLot lot, Biome biome) {
 		return generator.oreProvider.remapBiome(biome);
-		}
 	}
 
 	@Override
-	public void preGenerateChunk(WorldGenerator generator, PlatLot lot, ByteChunk chunk, BiomeGrid biomes, CachedYs blockYs) {
+	public void preGenerateChunk(CityWorldGenerator generator, PlatLot lot, InitialBlocks chunk, BiomeGrid biomes, CachedYs blockYs) {
 		Biome biome = lot.getChunkBiome();
 		OreProvider ores = generator.oreProvider;
-		boolean surfaceCaves = isSurfaceCaveAt(chunk.chunkX, chunk.chunkZ);
+		boolean surfaceCaves = isSurfaceCaveAt(chunk.sectionX, chunk.sectionZ);
 		
 		// shape the world
 		for (int x = 0; x < chunk.width; x++) {
@@ -232,84 +257,88 @@ public class ShapeProvider_Normal extends ShapeProvider {
 				
 				// buildable?
 				if (lot.style == LotStyle.STRUCTURE || lot.style == LotStyle.ROUNDABOUT) {
-					generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, generator.streetLevel - 2, ores.subsurfaceId, generator.streetLevel, ores.subsurfaceId, false);
+					generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, generator.streetLevel - 2, ores.subsurfaceMaterial, generator.streetLevel, ores.subsurfaceMaterial, false);
 					
 				// possibly buildable?
 				} else if (y == generator.streetLevel) {
-					generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 3, ores.subsurfaceId, y, ores.surfaceId, generator.settings.includeDecayedNature);
+					generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 3, ores.subsurfaceMaterial, y, ores.surfaceMaterial, generator.settings.includeDecayedNature);
 				
 				// won't likely have a building
 				} else {
 
 					// on the beach
 					if (y == generator.seaLevel) {
-						generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 2, ores.fluidSubsurfaceId, y, ores.fluidSurfaceId, generator.settings.includeDecayedNature);
-						biome = Biome.BEACH;
+						generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, generator.settings.includeDecayedNature);
+						biome = Biome.BEACHES;
 
 					// we are in the water! ...or are we?
 					} else if (y < generator.seaLevel) {
 						biome = Biome.DESERT;
 						if (generator.settings.includeDecayedNature)
 							if (generator.settings.includeAbovegroundFluids && y < generator.deepseaLevel)
-								generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 2, ores.fluidSubsurfaceId, y, ores.fluidSurfaceId, generator.deepseaLevel, ores.fluidId, false);
+								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, generator.deepseaLevel, ores.fluidMaterial, false);
 							else
-								generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 2, ores.fluidSubsurfaceId, y, ores.fluidSurfaceId, true);
+								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, true);
 						else 
 							if (generator.settings.includeAbovegroundFluids) {
-								generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 2, ores.fluidSubsurfaceId, y, ores.fluidSurfaceId, generator.seaLevel, ores.fluidId, false);
+								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, generator.seaLevel, ores.fluidMaterial, false);
 								biome = Biome.OCEAN;
 							} else
-								generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 2, ores.fluidSubsurfaceId, y, ores.fluidSurfaceId, false);
+								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, false);
 
 					// we are in the mountains
 					} else {
 
 						// regular trees only
 						if (y < generator.treeLevel) {
-							generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 3, ores.subsurfaceId, y, ores.surfaceId, generator.settings.includeDecayedNature);
+							generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 3, ores.subsurfaceMaterial, y, ores.surfaceMaterial, generator.settings.includeDecayedNature);
 							biome = Biome.FOREST;
 
 						// regular trees and some evergreen trees
 						} else if (y < generator.evergreenLevel) {
-							generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 2, ores.subsurfaceId, y, ores.surfaceId, surfaceCaves);
+							generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.subsurfaceMaterial, y, ores.surfaceMaterial, surfaceCaves);
 							biome = Biome.FOREST_HILLS;
 
 						// evergreen and some of fallen snow
 						} else if (y < generator.snowLevel) {
-							generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 1, ores.subsurfaceId, y, ores.surfaceId, surfaceCaves);
+							generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 1, ores.subsurfaceMaterial, y, ores.surfaceMaterial, surfaceCaves);
 							biome = Biome.TAIGA_HILLS;
 							
 						// only snow up here!
 						} else {
 							if (generator.settings.includeAbovegroundFluids && y > generator.snowLevel + 2)
-								generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 1, ores.stratumId, y, ores.fluidFrozenId, surfaceCaves);
+								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 1, ores.stratumMaterial, y, ores.fluidFrozenMaterial, surfaceCaves);
 							else
-								generateStratas(generator, lot, chunk, x, z, ores.substratumId, ores.stratumId, y - 1, ores.stratumId, y, ores.stratumId, surfaceCaves);
+								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 1, ores.stratumMaterial, y, ores.stratumMaterial, surfaceCaves);
 							biome = Biome.ICE_MOUNTAINS;
 						}
 					}
 				}
 				
 				// set biome for block
+				if (generator.settings.includeDecayedNature)
+					biome = Biome.DESERT;
 				biomes.setBiome(x, z, remapBiome(generator, lot, biome));
 			}
 		}	
 	}
 	
 	@Override
-	public void postGenerateChunk(WorldGenerator generator, PlatLot lot, ByteChunk chunk, CachedYs blockYs) {
-		
+	public void postGenerateChunk(CityWorldGenerator generator, PlatLot lot, InitialBlocks chunk, CachedYs blockYs) {
+
 		// mines please
 		lot.generateMines(generator, chunk);
 	}
 
 	@Override
-	public void preGenerateBlocks(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs) {
-		// nothing... yet
+	public void preGenerateBlocks(CityWorldGenerator generator, PlatLot lot, RealBlocks chunk, CachedYs blockYs) {
+		
+		// put bones in?
+		lot.generateBones(generator, chunk);
 	}
 
 	@Override
-	public void postGenerateBlocks(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs) {
+	public void postGenerateBlocks(CityWorldGenerator generator, PlatLot lot, RealBlocks chunk, CachedYs blockYs) {
 		
 		// put ores in?
 		lot.generateOres(generator, chunk);
@@ -354,7 +383,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	}
 	
 	@Override
-	public double findPerciseY(WorldGenerator generator, int blockX, int blockZ) {
+	public double findPerciseY(CityWorldGenerator generator, int blockX, int blockZ) {
 		double y = 0;
 		
 		// shape the noise
@@ -425,7 +454,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	}
 
 	@Override
-	public boolean notACave(WorldGenerator generator, int blockX, int blockY, int blockZ) {
+	public boolean notACave(CityWorldGenerator generator, int blockX, int blockY, int blockZ) {
 		if (generator.settings.includeCaves) {
 			double cave = caveShape.noise(blockX * caveScale, blockY * caveScaleY, blockZ * caveScale);
 			return !(cave > caveThreshold || cave < -caveThreshold);
@@ -433,8 +462,4 @@ public class ShapeProvider_Normal extends ShapeProvider {
 			return true;
 	}
 	
-	public boolean isSurfaceCaveAt(double chunkX, double chunkZ) {
-		return microBooleanAt(chunkX, chunkZ, microSurfaceCaveSlot);
-	}
-
 }

@@ -10,7 +10,7 @@ public class WarehouseWithStacks extends RoomProvider {
 	public WarehouseWithStacks() {
 		super();
 
-		roomTypes.add(new StorageStacksRoom(Material.WOOD));
+		roomTypes.add(new StorageStacksRoom(Material.BOOKSHELF));
 		roomTypes.add(new StorageStacksRoom(Material.PISTON_BASE));
 		roomTypes.add(new StorageStacksRoom(Material.WORKBENCH));
 	}

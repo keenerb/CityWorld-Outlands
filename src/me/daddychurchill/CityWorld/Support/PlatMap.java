@@ -1,6 +1,6 @@
 package me.daddychurchill.CityWorld.Support;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Clipboard.Clipboard;
 import me.daddychurchill.CityWorld.Clipboard.ClipboardLot;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -9,6 +9,7 @@ import me.daddychurchill.CityWorld.Plats.RoadLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot.LotStyle;
 import me.daddychurchill.CityWorld.Plugins.ShapeProvider;
 
+import org.bukkit.block.BlockFace;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
 public class PlatMap {
@@ -18,14 +19,14 @@ public class PlatMap {
 	
 	// Instance data
 //	public World world;
-	public WorldGenerator generator;
+	public CityWorldGenerator generator;
 	public int originX;
 	public int originZ;
 	public DataContext context;
 	protected PlatLot[][] platLots;
 	private float naturalPlats;
 
-	public PlatMap(WorldGenerator generator, ShapeProvider shapeProvider, int originX, int originZ) {
+	public PlatMap(CityWorldGenerator generator, ShapeProvider shapeProvider, int originX, int originZ) {
 		super();
 		
 		// populate the instance data
@@ -50,41 +51,44 @@ public class PlatMap {
 		}
 	}
 	
-	public float getNaturePercent() {
-		return naturalPlats / (Width * Width);
+	public double getNaturePercent() {
+		return naturalPlats / (Width * Width) + generator.settings.ruralnessLevel;
 	}
 	
 	public Odds getOddsGenerator() {
 		return generator.shapeProvider.getMacroOddsGeneratorAt(originX, originZ);
 	}
 	
-	public Odds getChunkOddsGenerator(SupportChunk chunk) {
-		return generator.shapeProvider.getMicroOddsGeneratorAt(chunk.chunkX, chunk.chunkZ);
+	public Odds getChunkOddsGenerator(SupportBlocks chunk) {
+		return generator.shapeProvider.getMicroOddsGeneratorAt(chunk.sectionX, chunk.sectionZ);
 	}
 	
 	public Odds getChunkOddsGenerator(int chunkX, int chunkZ) {
 		return generator.shapeProvider.getMicroOddsGeneratorAt(chunkX, chunkZ);
 	}
 	
-	public void generateChunk(ByteChunk chunk, BiomeGrid biomes) {
+	public void generateChunk(InitialBlocks chunk, BiomeGrid biomes) {
 
 		// depending on the platchunk's type render a layer
-		int platX = chunk.chunkX - originX;
-		int platZ = chunk.chunkZ - originZ;
+		int platX = chunk.sectionX - originX;
+		int platZ = chunk.sectionZ - originZ;
 		
 		PlatLot platlot = platLots[platX][platZ];
 		if (platlot != null) {
+			
+//			if (chunk.sectionX != platlot.getChunkX() || chunk.sectionZ != platlot.getChunkZ())
+//				generator.reportFormatted("!!!!!1! Wrong chunk [%d, %d] for Platlot [%d, %d]", chunk.sectionX, chunk.sectionZ, platlot.getChunkX(), platlot.getChunkZ());
 
 			// do what we came here for
 			platlot.generateChunk(generator, this, chunk, biomes, context, platX, platZ);
 		}
 	}
 	
-	public void generateBlocks(RealChunk chunk) {
+	public void generateBlocks(RealBlocks chunk) {
 
 		// depending on the platchunk's type render a layer
-		int platX = chunk.chunkX - originX;
-		int platZ = chunk.chunkZ - originZ;
+		int platX = chunk.sectionX - originX;
+		int platZ = chunk.sectionZ - originZ;
 		PlatLot platlot = platLots[platX][platZ];
 		if (platlot != null) {
 
@@ -106,7 +110,7 @@ public class PlatMap {
 	}
 	
 	public PlatLot getLot(int x, int z) {
-		if (x >= 0 && x < Width && z >= 0 && z < Width)
+		if (inBounds(x, z))
 			return platLots[x][z];
 		else
 			return null;
@@ -117,35 +121,60 @@ public class PlatMap {
 		int platZ = chunkZ - originZ;
 		
 		// range check
-		if (platX >= 0 && platX < Width && platZ >= 0 && platZ < Width)
+		if (inBounds(platX, platZ))
 			return platLots[platX][platZ];
 		else
 			throw new IndexOutOfBoundsException("Location specified is not in this PlatMap");
 	}
 	
+	public boolean inBounds(int x, int z) {
+		return x >= 0 && x < Width && z >= 0 && z < Width;
+	}
+	
 	public boolean isEmptyLot(int x, int z) {
-		if (x >= 0 && x < Width && z >= 0 && z < Width)
+		if (inBounds(x, z))
 			return platLots[x][z] == null;
 		else
 			return true;
 	}
 	
+	public boolean isEmptyLots(int x, int z, int width, int length) {
+		for (int a = x; a < x + width; a++)
+			for (int b = z; b < z + length; b++)
+				if (!isEmptyLot(a, b))
+					return false;
+		return true;
+	}
+	
+	public boolean isInnerReallyEmptyLot(int centerX, int centerZ) {
+		if (centerX >= 1 && centerX < Width - 1 && centerZ >= 1 && centerZ < Width - 1) {
+			for (int x = centerX - 1; x < centerX + 2; x++) {
+				for (int z = centerZ - 1; z < centerZ + 2; z++) {
+					if (platLots[x][z] != null)
+						return false;
+				}
+			}
+			return true;
+		} else
+			return false;
+	}
+	
 	public boolean isNaturalLot(int x, int z) {
-		if (x >= 0 && x < Width && z >= 0 && z < Width)
+		if (inBounds(x, z))
 			return platLots[x][z] == null || platLots[x][z].style == LotStyle.NATURE;
 		else
 			return true;
 	}
 	
 	public boolean isStructureLot(int x, int z) {
-		if (x >= 0 && x < Width && z >= 0 && z < Width)
+		if (inBounds(x, z))
 			return platLots[x][z] != null && platLots[x][z].style == LotStyle.STRUCTURE;
 		else
 			return false;
 	}
 	
 	public boolean isExistingRoad(int x, int z) {
-		if (x >= 0 && x < Width && z >= 0 && z < Width)
+		if (inBounds(x, z))
 			return isRoad(x, z);
 		else
 			return false;
@@ -160,7 +189,27 @@ public class PlatMap {
 
 		// if it is not natural, make it so
 		PlatLot current = platLots[x][z];
+//		if (current != null && current.getChunkX() == 21 && current.getChunkZ() == -22) {
+//			generator.reportMessage("#####>>>>> recycling it");
+//			generator.reportMessage(".....>>>>> from = " + current.toString());
+//			try {
+//				throw new Exception();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		} else if (this.originX + x == 21 && this.originZ + z == -22) {
+//			generator.reportMessage("#####>>>>> recycled it");
+//			try {
+//				throw new Exception();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+
+		// put nature there
 		if (current == null || current.style != LotStyle.NATURE) {
+//			if (this.originX + x == 21 && this.originZ + z == -22) 
+//				generator.reportMessage(".....>>>>> planting nature");
 		
 			// place nature
 			platLots[x][z] = generator.shapeProvider.createNaturalLot(generator, this, x, z);
@@ -172,11 +221,14 @@ public class PlatMap {
 		if (generator.settings.inRoadRange(originX + x, originZ + z) && 
 			(platLots[x][z] == null || roundaboutPart || platLots[x][z].style != LotStyle.ROAD)) {
 			
+			// remember the old one
+			PlatLot oldLot = platLots[x][z];
+			
 			// clear it please
 			emptyLot(x, z);
 			
 			// place the lot
-			platLots[x][z] = generator.shapeProvider.createRoadLot(generator, this, x, z, roundaboutPart);
+			platLots[x][z] = generator.shapeProvider.createRoadLot(generator, this, x, z, roundaboutPart, oldLot);
 		}
 	}
 	
@@ -185,11 +237,24 @@ public class PlatMap {
 			emptyLot(x, z);
 			return true;
 		} else {
+//			if (lot.getChunkX() == 21 && lot.getChunkZ() == -22)
+//				generator.reportMessage("#####>>>>> setting it");
+			
 			boolean result = lot.isPlaceableAt(generator, originX + x, originZ + z);
 			if (result) {
 				
 				// clear it please
 				emptyLot(x, z);
+				
+//				if (lot.getChunkX() == 21 && lot.getChunkZ() == -22) {
+//					generator.reportMessage(".....>>>>> set it = " + lot.toString());
+//					generator.reportMessage(".....>>>>> average = " + lot.getAverageY());
+//					try {
+//						throw new Exception();
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
 				
 				// place the lot
 				platLots[x][z] = lot;
@@ -202,11 +267,24 @@ public class PlatMap {
 		
 		// keep track of the nature count
 		PlatLot current = platLots[x][z];
-		if (current != null && current.style == LotStyle.NATURE)
-			naturalPlats--;
+		if (current != null) {
+			if (current.style == LotStyle.NATURE)
+				naturalPlats--;
 		
-		// empty this one out
-		platLots[x][z] = null;
+//			if (current.getChunkX() == 21 && current.getChunkZ() == -22) {
+//				generator.reportMessage("#####>>>>> emptied it");
+//				generator.reportMessage(".    >>>>> was = " + current.toString());
+//				generator.reportMessage(".....>>>>> average = " + current.getAverageY());
+//				try {
+//					throw new Exception();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+			
+			// empty this one out
+			platLots[x][z] = null;
+		}
 	}
 	
 	public boolean isTrulyIsolatedLot(int x, int z) {
@@ -250,7 +328,8 @@ public class PlatMap {
 			// reclaim all of the silly roads
 			for (int x = 0; x < Width; x++) {
 				for (int z = 0; z < Width; z++) {
-					this.recycleLot(x, z);
+					if (isRoad(x, z))
+						recycleLot(x, z);
 				}
 			}
 			
@@ -279,7 +358,9 @@ public class PlatMap {
 			
 				// are the odds in favor of a roundabout? AND..
 				// are all the surrounding chunks empty (connecting roads shouldn't be there yet)
+//				generator.reportMessage("Roundabout? " + generator.settings.includeRoundabouts + ", odds: " + context.oddsOfRoundAbouts + " context: " + context.toString());
 				if (generator.settings.includeRoundabouts && 
+					generator.settings.inCityRange(originX + x, originZ + z) && 
 					generator.shapeProvider.isRoundaboutAt(originX + x, originZ + z, context.oddsOfRoundAbouts) &&
 					isEmptyLot(x - 1, z - 1) && isEmptyLot(x - 1, z) &&	isEmptyLot(x - 1, z + 1) &&
 					isEmptyLot(x, z - 1) &&	isEmptyLot(x, z + 1) &&
@@ -345,8 +426,8 @@ public class PlatMap {
 	private boolean isRoadTowards(int x, int z, int deltaX, int deltaZ) {
 		
 		// is this a "real" spot?
-		boolean result = HeightInfo.isBuildableAt(generator, (originX + x + deltaX) * SupportChunk.chunksBlockWidth,
-									   			 			 (originZ + z + deltaZ) * SupportChunk.chunksBlockWidth);
+		boolean result = HeightInfo.isBuildableAt(generator, (originX + x + deltaX) * SupportBlocks.sectionBlockWidth,
+									   			 			 (originZ + z + deltaZ) * SupportBlocks.sectionBlockWidth);
 		
 		// if this isn't a buildable spot, is there a bridge or tunnel that gets us there?
 		if (!result)
@@ -375,12 +456,12 @@ public class PlatMap {
 	private boolean isBridgeTowards(int x, int z, int deltaX, int deltaZ) {
 		
 		// how far do we go?
-		int offsetX = deltaX * SupportChunk.chunksBlockWidth;
-		int offsetZ = deltaZ * SupportChunk.chunksBlockWidth;
+		int offsetX = deltaX * SupportBlocks.sectionBlockWidth;
+		int offsetZ = deltaZ * SupportBlocks.sectionBlockWidth;
 		
 		// where do we test?
-		int chunkX = (originX + x) * SupportChunk.chunksBlockWidth;
-		int chunkZ = (originZ + z) * SupportChunk.chunksBlockWidth;
+		int chunkX = (originX + x) * SupportBlocks.sectionBlockWidth;
+		int chunkZ = (originZ + z) * SupportBlocks.sectionBlockWidth;
 		
 		// what is the polarity of this spot
 		boolean originPolarity = generator.shapeProvider.getBridgePolarityAt(chunkX, chunkZ);
@@ -417,7 +498,7 @@ public class PlatMap {
 	}
 
 	private final static int maxPlaceTries = 16;
-	public void placeSpecificClip(WorldGenerator generator, Odds odds, Clipboard clip) {
+	public void placeSpecificClip(CityWorldGenerator generator, Odds odds, Clipboard clip) {
 		int chunksX = clip.chunkX;
 		int chunksZ = clip.chunkZ;
 		
@@ -441,11 +522,6 @@ public class PlatMap {
 			// found one?
 			if (empty) {
 				
-//				generator.reportMessage("Placed " + clip.name + " at " + 
-//						((placeX + originX) * SupportChunk.chunksBlockWidth) + 
-//						", " + 
-//						((placeZ + originZ) * SupportChunk.chunksBlockWidth));
-
 				// put it there
 				placeSpecificClip(generator, odds, clip, placeX, placeZ);
 				
@@ -455,12 +531,12 @@ public class PlatMap {
 		}
 	}
 
-	public void placeSpecificClip(WorldGenerator generator, Odds odds, Clipboard clip, int placeX, int placeZ) {
+	public void placeSpecificClip(CityWorldGenerator generator, Odds odds, Clipboard clip, int placeX, int placeZ) {
 		int chunksX = clip.chunkX;
 		int chunksZ = clip.chunkZ;
 		
 		// what way are we facing?
-		Direction.Facing facing = odds.getFacing();
+		BlockFace facing = odds.getRandomFacing();
 		
 		// calculate the various template plats
 		for (int x = 0; x < chunksX; x++) {
@@ -471,10 +547,4 @@ public class PlatMap {
 			}
 		}
 	}
-
-//	// Added by Sablednah
-//	// https://github.com/echurchill/CityWorld/pull/4
-//	public PlatLot[][] getPlatLots() {
-//		return platLots;
-//	}
 }

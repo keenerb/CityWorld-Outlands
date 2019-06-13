@@ -2,7 +2,7 @@ package me.daddychurchill.CityWorld;
 
 import java.util.List;
 
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -28,9 +28,16 @@ public class CommandCityChunk implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
+		Player player = null;
+		if (sender instanceof Player)
+			player = (Player) sender;
+//		else {
+//			player = sender.getServer().getPlayer("echurchill");
+//			if (player != null)
+//				sender.sendMessage("Found " + player);
+//		}
 
+		if (player != null) {
 			if (player.hasPermission("citychunk.command")) {
 				boolean cleaning = false;
 				boolean regening = false;
@@ -50,7 +57,7 @@ public class CommandCityChunk implements CommandExecutor {
 							error = true;
 							break;
 						}
-						radius = Math.max(0, Math.min(10, radius));
+						radius = Math.max(0, Math.min(15, radius));
 					} else {
 						error = true;
 						break;
@@ -85,10 +92,10 @@ public class CommandCityChunk implements CommandExecutor {
 					// cleaning up chunks of stray items
 					if (cleaning) {
 						player.sendMessage("Cleaning up orphan items");
-						int x1 = (chunkX - radius) * SupportChunk.chunksBlockWidth;
-						int x2 = (chunkX + radius + 1) * SupportChunk.chunksBlockWidth;
-						int z1 = (chunkZ - radius) * SupportChunk.chunksBlockWidth;
-						int z2 = (chunkZ + radius + 1) * SupportChunk.chunksBlockWidth;
+						int x1 = (chunkX - radius) * SupportBlocks.sectionBlockWidth;
+						int x2 = (chunkX + radius + 1) * SupportBlocks.sectionBlockWidth;
+						int z1 = (chunkZ - radius) * SupportBlocks.sectionBlockWidth;
+						int z2 = (chunkZ + radius + 1) * SupportBlocks.sectionBlockWidth;
 						List<Entity> entities = world.getEntities();
 						for (Entity entity : entities) {
 							

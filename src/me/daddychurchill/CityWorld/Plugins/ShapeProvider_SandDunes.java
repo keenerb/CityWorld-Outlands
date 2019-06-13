@@ -5,7 +5,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.SandDunes.SandDunesConstructionContext;
 import me.daddychurchill.CityWorld.Context.SandDunes.SandDunesFarmContext;
 import me.daddychurchill.CityWorld.Context.SandDunes.SandDunesHighriseContext;
@@ -16,7 +16,7 @@ import me.daddychurchill.CityWorld.Context.SandDunes.SandDunesNeighborhoodContex
 import me.daddychurchill.CityWorld.Context.SandDunes.SandDunesParkContext;
 import me.daddychurchill.CityWorld.Context.SandDunes.SandDunesRoadContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.Odds;
 
 public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
@@ -39,7 +39,7 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 //	private final static double noiseAmplitude = 0.70;
 //	private final static double noiseHorizontalScale = 1.0 / 64.0;
 	
-	public ShapeProvider_SandDunes(WorldGenerator generator, Odds odds) {
+	public ShapeProvider_SandDunes(CityWorldGenerator generator, Odds odds) {
 		super(generator, odds);
 		
 		floodY = seaLevel + 20;
@@ -54,7 +54,7 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 	}
 
 	@Override
-	public void allocateContexts(WorldGenerator generator) {
+	public void allocateContexts(CityWorldGenerator generator) {
 		if (!contextInitialized) {
 			natureContext = new SandDunesNatureContext(generator);
 			roadContext = new SandDunesRoadContext(generator);
@@ -68,6 +68,7 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 			industrialContext = lowriseContext;
 			neighborhoodContext = new SandDunesNeighborhoodContext(generator);
 			farmContext = new SandDunesFarmContext(generator);
+			outlandContext = farmContext;
 			
 			contextInitialized = true;
 		}
@@ -78,7 +79,7 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 		return "SandDunes";
 	}
 	
-	public double findPerciseFloodY(WorldGenerator generator, int blockX, int blockZ) {
+	public double findPerciseFloodY(CityWorldGenerator generator, int blockX, int blockZ) {
 		
 		// shape the noise
 //		double noiseY = 0;//duneNoise.noise(blockX, blockZ, noiseFrequency, noiseAmplitude, true);
@@ -89,84 +90,84 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 	}
 	
 	@Override
-	public int findFloodY(WorldGenerator generator, int blockX, int blockZ) {
+	public int findFloodY(CityWorldGenerator generator, int blockX, int blockZ) {
 		return NoiseGenerator.floor(findPerciseFloodY(generator, blockX, blockZ));
 	}
 
 	@Override
-	public int findHighestFloodY(WorldGenerator generator) {
+	public int findHighestFloodY(CityWorldGenerator generator) {
 		return floodY + featureVerticalScale + noiseVerticalScale;
 	}
 
 	@Override
-	public int findLowestFloodY(WorldGenerator generator) {
+	public int findLowestFloodY(CityWorldGenerator generator) {
 		return floodY;
 	}
 
 	@Override
-	protected Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome) {
+	protected Biome remapBiome(CityWorldGenerator generator, PlatLot lot, Biome biome) {
 		return Biome.DESERT_HILLS;
 	}
 
 	@Override
-	protected void generateStratas(WorldGenerator generator, PlatLot lot,
-			ByteChunk chunk, int x, int z, byte substratumId, byte stratumId,
-			int stratumY, byte subsurfaceId, int subsurfaceY, byte surfaceId,
-			int coverY, byte coverId, boolean surfaceCaves) {
+	protected void generateStratas(CityWorldGenerator generator, PlatLot lot,
+			InitialBlocks chunk, int x, int z, Material substratumMaterial, Material stratumMaterial,
+			int stratumY, Material subsurfaceMaterial, int subsurfaceY, Material surfaceMaterial,
+			int coverY, Material coverMaterial, boolean surfaceCaves) {
 
 		// do the default bit
-		actualGenerateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, 
-				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
+		actualGenerateStratas(generator, lot, chunk, x, z, substratumMaterial, stratumMaterial, stratumY, 
+				subsurfaceMaterial, subsurfaceY, surfaceMaterial, surfaceCaves);
 		
 		// cover it up a bit
 		actualGenerateSand(generator, lot, chunk, x, z, subsurfaceY);
 	}
 	
 	@Override
-	protected void generateStratas(WorldGenerator generator, PlatLot lot,
-			ByteChunk chunk, int x, int z, byte substratumId, byte stratumId,
-			int stratumY, byte subsurfaceId, int subsurfaceY, byte surfaceId,
+	protected void generateStratas(CityWorldGenerator generator, PlatLot lot,
+			InitialBlocks chunk, int x, int z, Material substratumMaterial, Material stratumMaterial,
+			int stratumY, Material subsurfaceMaterial, int subsurfaceY, Material surfaceMaterial,
 			boolean surfaceCaves) {
 
 		// do the default bit
-		actualGenerateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, 
-				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
+		actualGenerateStratas(generator, lot, chunk, x, z, substratumMaterial, stratumMaterial, stratumY, 
+				subsurfaceMaterial, subsurfaceY, surfaceMaterial, surfaceCaves);
 		
 		// cover it up a bit
 		actualGenerateSand(generator, lot, chunk, x, z, subsurfaceY);
 	}
 	
-	protected void actualGenerateSand(WorldGenerator generator, PlatLot lot, ByteChunk chunk, int x, int z, int subsurfaceY) {
+	protected void actualGenerateSand(CityWorldGenerator generator, PlatLot lot, InitialBlocks chunk, int x, int z, int subsurfaceY) {
 		int y = findFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
 		if (y > subsurfaceY) {
-			chunk.setBlocks(x, subsurfaceY, y - 2, z, subSandId);
-			chunk.setBlocks(x, y - 2, y, z, sandId);
-			if (odds.getRandomDouble() < .02) {
-				chunk.setBlocks(x, y - 6, y - 3, z, logId);
-			}
-
+			chunk.setBlocks(x, subsurfaceY, y - 2, z, Material.SANDSTONE);
+			chunk.setBlocks(x, y - 2, y, z, Material.SAND);
 		}
 	}
 	
-	private final static Material sandMat = Material.SAND;
-//	private final static Material sandMat = Material.GLASS;
-	private final static byte sandId = (byte) sandMat.getId();
-	private final static byte subSandId = (byte) Material.SANDSTONE.getId();
-	private final static byte logId = (byte) Material.LOG.getId();
-//	private final static byte subSandId = sandId;
+//	private final static Material sandMat = Material.SAND;
+////	private final static Material sandMat = Material.GLASS;
+//	private final static byte sandId = (byte) sandMat.getId();
+//	private final static byte subSandId = (byte) Material.SANDSTONE.getId();
+////	private final static byte subSandId = sandId;
+	
+//	@Override
+//	public byte findAtmosphereIdAt(WorldGenerator generator, int blockY) {
+//		if (blockY < floodY)
+//			return BlackMagic.sandId;
+//		else
+//			return super.findAtmosphereIdAt(generator, blockY);
+//	}
 	
 	@Override
-	public byte findAtmosphereIdAt(WorldGenerator generator, int blockY) {
-		if (blockY < floodY)
-			return sandId;
-		else
-			return super.findAtmosphereIdAt(generator, blockY);
+	public boolean clearAtmosphere(CityWorldGenerator generator) {
+		return false;
 	}
 	
 	@Override
-	public Material findAtmosphereMaterialAt(WorldGenerator generator, int blockY) {
+	public Material findAtmosphereMaterialAt(CityWorldGenerator generator, int blockY) {
 		if (blockY < floodY)
-			return sandMat;
+			return Material.SAND;
 		else
 			return super.findAtmosphereMaterialAt(generator, blockY);
 	}

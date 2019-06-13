@@ -1,45 +1,42 @@
 package me.daddychurchill.CityWorld.Context;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
+import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 
 public abstract class UncivilizedContext extends DataContext {
 
-	public UncivilizedContext(WorldGenerator generator) {
+	public UncivilizedContext(CityWorldGenerator generator) {
 		super(generator);
-		// TODO Auto-generated constructor stub
+
+		oddsOfIsolatedLots = Odds.oddsNeverGoingToHappen; 
+		oddsOfIsolatedConstructs = Odds.oddsSomewhatLikely;
+		
+		oddsOfParks = Odds.oddsNeverGoingToHappen; 
+		
+		oddsOfIdenticalBuildingHeights = Odds.oddsNeverGoingToHappen; 
+		oddsOfSimilarBuildingHeights = Odds.oddsNeverGoingToHappen; 
+		oddsOfSimilarBuildingRounding = Odds.oddsNeverGoingToHappen; 
+		oddsOfStairWallMaterialIsWallMaterial = Odds.oddsNeverGoingToHappen; 
+		
+		oddsOfUnfinishedBuildings = Odds.oddsNeverGoingToHappen; 
+		oddsOfOnlyUnfinishedBasements = Odds.oddsNeverGoingToHappen; 
+		oddsOfCranes = Odds.oddsNeverGoingToHappen; 
+		
+		oddsOfBuildingWallInset = Odds.oddsNeverGoingToHappen; 
+		oddsOfSimilarInsetBuildings = Odds.oddsNeverGoingToHappen; 
+		oddsOfFlatWalledBuildings = Odds.oddsNeverGoingToHappen; 
+		
+		//oddsOfMissingRoad = oddsNeverGoingToHappen; 
+		oddsOfRoundAbouts = Odds.oddsNeverGoingToHappen; 
+		
+		oddsOfArt = Odds.oddsNeverGoingToHappen; 
+		oddsOfNaturalArt = Odds.oddsNeverGoingToHappen; 
 	}
 
 	@Override
-	protected void initialize() {
-		oddsOfIsolatedLots = oddsNeverGoingToHappen; 
-		oddsOfIsolatedConstructs = oddsUnlikely;
-		
-		oddsOfParks = oddsNeverGoingToHappen; 
-		
-		oddsOfIdenticalBuildingHeights = oddsNeverGoingToHappen; 
-		oddsOfSimilarBuildingHeights = oddsNeverGoingToHappen; 
-		oddsOfSimilarBuildingRounding = oddsNeverGoingToHappen; 
-		oddsOfStairWallMaterialIsWallMaterial = oddsNeverGoingToHappen; 
-		
-		oddsOfUnfinishedBuildings = oddsNeverGoingToHappen; 
-		oddsOfOnlyUnfinishedBasements = oddsNeverGoingToHappen; 
-		oddsOfCranes = oddsNeverGoingToHappen; 
-		
-		oddsOfBuildingWallInset = oddsNeverGoingToHappen; 
-		oddsOfSimilarInsetBuildings = oddsNeverGoingToHappen; 
-		oddsOfFlatWalledBuildings = oddsNeverGoingToHappen; 
-		
-		//oddsOfMissingRoad = oddsNeverGoingToHappen; 
-		oddsOfRoundAbouts = oddsNeverGoingToHappen; 
-		
-		oddsOfMissingArt = oddsNeverGoingToHappen; 
-		oddsOfNaturalArt = oddsNeverGoingToHappen; 
-	}
-	
-	@Override
-	public void validateMap(WorldGenerator generator, PlatMap platmap) {
+	public void validateMap(CityWorldGenerator generator, PlatMap platmap) {
 		for (int x = 0; x < PlatMap.Width; x++) {
 			for (int z = 0; z < PlatMap.Width; z++) {
 				PlatLot current = platmap.getLot(x, z);

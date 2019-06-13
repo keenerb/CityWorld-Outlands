@@ -1,10 +1,10 @@
 package me.daddychurchill.CityWorld.Context;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
-import me.daddychurchill.CityWorld.Plats.NatureLot;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plats.RoadLot;
 import me.daddychurchill.CityWorld.Plats.Nature.BunkerLot;
+import me.daddychurchill.CityWorld.Plats.Nature.HotairBalloonLot;
 import me.daddychurchill.CityWorld.Plats.Nature.MineEntranceLot;
 import me.daddychurchill.CityWorld.Plats.Nature.MountainShackLot;
 import me.daddychurchill.CityWorld.Plats.Nature.MountainTentLot;
@@ -15,22 +15,20 @@ import me.daddychurchill.CityWorld.Support.HeightInfo;
 import me.daddychurchill.CityWorld.Support.HeightInfo.HeightState;
 import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
 
 public class NatureContext extends UncivilizedContext {
 
-	public NatureContext(WorldGenerator generator) {
+	public NatureContext(CityWorldGenerator generator) {
 		super(generator);
+
+		oddsOfIsolatedConstructs = Odds.oddsSomewhatUnlikely;
 	}
 	
-	public PlatLot createNaturalLot(WorldGenerator generator, PlatMap platmap, int x, int z) {
-		return new NatureLot(platmap, platmap.originX + x, platmap.originZ + z);
-	}
-	
-	private final static double oddsOfBunkers = DataContext.oddsLikely;
+	private final static double oddsOfBunkers = Odds.oddsLikely;
 
 	@Override
-	public void populateMap(WorldGenerator generator, PlatMap platmap) {
+	public void populateMap(CityWorldGenerator generator, PlatMap platmap) {
 
 		//TODO, Nature doesn't handle schematics quite right yet
 		// let the user add their stuff first, then plug any remaining holes with our stuff
@@ -38,7 +36,8 @@ public class NatureContext extends UncivilizedContext {
 		
 		// random stuff?
 		Odds platmapOdds = platmap.getOddsGenerator();
-		boolean doBunkers = platmapOdds.playOdds(oddsOfBunkers);
+		boolean doBunkers = generator.settings.includeBunkers && platmapOdds.playOdds(oddsOfBunkers);
+		boolean didBunkerEntrance = false;
 		
 		// where it all begins
 		int originX = platmap.originX;
@@ -64,8 +63,10 @@ public class NatureContext extends UncivilizedContext {
 				if (current == null) {
 					
 					// what is the world location of the lot?
-					int blockX = (originX + x) * SupportChunk.chunksBlockWidth;
-					int blockZ = (originZ + z) * SupportChunk.chunksBlockWidth;
+					int chunkX = originX + x;
+					int chunkZ = originZ + z;
+					int blockX = chunkX * SupportBlocks.sectionBlockWidth;
+					int blockZ = chunkZ * SupportBlocks.sectionBlockWidth;
 					
 					// get the height info for this chunk
 					heights = HeightInfo.getHeightsFaster(generator, blockX, blockZ);
@@ -89,27 +90,35 @@ public class NatureContext extends UncivilizedContext {
 							}
 							
 							// innermost chunks?
-							boolean innermost = x >= RoadLot.PlatMapRoadInset && x < PlatMap.Width - RoadLot.PlatMapRoadInset && 
-												z >= RoadLot.PlatMapRoadInset && z < PlatMap.Width - RoadLot.PlatMapRoadInset;
+							boolean potentialRoads = (x == (RoadLot.PlatMapRoadInset - 1) || x == (PlatMap.Width - RoadLot.PlatMapRoadInset)) && 
+													 (z == (RoadLot.PlatMapRoadInset - 1) || z == (PlatMap.Width - RoadLot.PlatMapRoadInset));
+							boolean doBunkerEntrance = doBunkers && !didBunkerEntrance && !potentialRoads;
 							
 							// what type of height are we talking about?
 							switch (heights.state) {
 							case MIDLAND: 
-								
-								// if not one of the innermost or the height isn't tall enough for bunkers
-								if (!innermost || minHeight < BunkerLot.calcBunkerMinHeight(generator)) {
-									if (heights.isSortaFlat() && generator.shapeProvider.isIsolatedConstructAt(originX + x, originZ + z, oddsOfIsolatedConstructs))
-										current = createSurfaceBuildingLot(generator, platmap, originX + x, originZ + z, heights);
-									break;
+								if (doBunkers && minHeight > BunkerLot.calcBunkerMinHeight(generator)) {
+									current = createBuriedBuildingLot(generator, platmap, chunkX, chunkZ, doBunkerEntrance);
+									
+									
+								} else if (heights.isSortaFlat() && generator.shapeProvider.isIsolatedConstructAt(originX + x, originZ + z, oddsOfIsolatedConstructs)) {
+									current = createSurfaceBuildingLot(generator, platmap, originX + x, originZ + z, heights);
 								}
+								
+								break;
 							case HIGHLAND:
 							case PEAK:
-								if (doBunkers && innermost)
-									current = createBuriedBuildingLot(generator, platmap, originX + x, originZ + z);
+								if (doBunkers) {
+									current = createBuriedBuildingLot(generator, platmap, chunkX, chunkZ, doBunkerEntrance);
+								}
 								break;
 							default:
 								break;
 							}
+							
+							// did we do it?
+							if (doBunkerEntrance && current != null)
+								didBunkerEntrance = true;
 						}
 						
 						// did current get defined?
@@ -127,13 +136,13 @@ public class NatureContext extends UncivilizedContext {
 		populateSpecial(generator, platmap, minHeightX, minHeight, minHeightZ, minState);
 	}
 	
-	public PlatLot createBuriedBuildingLot(WorldGenerator generator, PlatMap platmap, int x, int z) {
+	protected PlatLot createBuriedBuildingLot(CityWorldGenerator generator, PlatMap platmap, int x, int z, boolean firstOne) {
 		if (generator.settings.includeBunkers)
-			return new BunkerLot(platmap, x, z);
+			return new BunkerLot(platmap, x, z, firstOne);
 		return null;
 	}
 	
-	public PlatLot createSurfaceBuildingLot(WorldGenerator generator, PlatMap platmap, int x, int z, HeightInfo heights) {
+	protected PlatLot createSurfaceBuildingLot(CityWorldGenerator generator, PlatMap platmap, int x, int z, HeightInfo heights) {
 		if (generator.settings.includeHouses)
 			if (platmap.getOddsGenerator().flipCoin())
 				return new MountainShackLot(platmap, x, z);
@@ -142,45 +151,71 @@ public class NatureContext extends UncivilizedContext {
 		return null;
 	}
 	
-	protected void populateSpecial(WorldGenerator generator, PlatMap platmap, int x, int y, int z, HeightState state) {
+	protected void populateSpecial(CityWorldGenerator generator, PlatMap platmap, int x, int y, int z, HeightState state) {
 
 		// what type of height are we talking about?
 		if (state != HeightState.BUILDING && 
-			generator.shapeProvider.isIsolatedConstructAt(platmap.originX + x, platmap.originZ + z, oddsOfIsolatedConstructs / 2)) {
+			generator.shapeProvider.isIsolatedConstructAt(platmap.originX + x, platmap.originZ + z, oddsOfIsolatedConstructs)) {
+			PlatLot current = null;
 			
 			// what to make?
 			switch (state) {
 			case DEEPSEA:
 				// Oil rigs
-				if (generator.settings.includeBuildings) {
-					platmap.setLot(x, z, new OilPlatformLot(platmap, platmap.originX + x, platmap.originZ + z));
+				if (generator.settings.includeBuildings)
+					current = new OilPlatformLot(platmap, platmap.originX + x, platmap.originZ + z);
+				break;
+			case SEA:
+				if (generator.settings.includeAirborneStructures) {
+					if (platmap.getOddsGenerator().playOdds(Odds.oddsSomewhatUnlikely))
+
+						// Hotair balloons
+						current = new HotairBalloonLot(platmap, platmap.originX + x, platmap.originZ + z);
+					
+						//TODO boat!
 				}
 				break;
-//			case SEA:
-//				break;
 //			case BUILDING:
 //				break;
-//			case LOWLAND:
-//				//TODO Statue overlooking the city?
-//				break;
+			case LOWLAND:
+				if (generator.settings.includeAirborneStructures) {
+					if (platmap.getOddsGenerator().playOdds(Odds.oddsSomewhatUnlikely))
+
+						// Hotair balloons
+						current = new HotairBalloonLot(platmap, platmap.originX + x, platmap.originZ + z);
+					
+						//TODO Statue overlooking the city?
+				}
+				break;
 			case MIDLAND: 
 				// Mine entrance
 				if (generator.settings.includeMines)
-					platmap.setLot(x, z, new MineEntranceLot(platmap, platmap.originX + x, platmap.originZ + z));
+					current = new MineEntranceLot(platmap, platmap.originX + x, platmap.originZ + z);
 				break;
 			case HIGHLAND: 
 				// Radio towers
 				if (generator.settings.includeBuildings)
-					platmap.setLot(x, z, new RadioTowerLot(platmap, platmap.originX + x, platmap.originZ + z));
+					current = new RadioTowerLot(platmap, platmap.originX + x, platmap.originZ + z);
 				break;
 			case PEAK:
 				// Old castle
 				if (generator.settings.includeBuildings)
-					platmap.setLot(x, z, new OldCastleLot(platmap, platmap.originX + x, platmap.originZ + z));
+					current = new OldCastleLot(platmap, platmap.originX + x, platmap.originZ + z);
 				break;
 			default:
 				break;
 			}
-		}
+			
+			if (current != null) {
+				platmap.setLot(x, z, current);
+//				generator.reportMessage("Made: " + current.toString() + " AT " 
+//						+ RealBlocks.getBlockX(platmap.originX + x, 8) + ", " 
+//						+ RealBlocks.getBlockZ(platmap.originZ + z, 8));
+			}
+		} 
+	}
+
+	public void validateMap(CityWorldGenerator generator, PlatMap platmap) {
+		//TODO Should this be calling the parent?
 	}
 }

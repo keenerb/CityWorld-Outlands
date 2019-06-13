@@ -3,29 +3,29 @@ package me.daddychurchill.CityWorld.Plats.Urban;
 import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.BuildingLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.RealChunk;
+import me.daddychurchill.CityWorld.Support.RealBlocks;
 import me.daddychurchill.CityWorld.Support.SurroundingFloors;
 import me.daddychurchill.CityWorld.Support.Surroundings;
-import me.daddychurchill.CityWorld.Support.Direction.StairWell;
+import me.daddychurchill.CityWorld.Support.BadMagic.StairWell;
 
 public class UnfinishedBuildingLot extends BuildingLot {
 
 	private final static int FloorHeight = DataContext.FloorHeight;
 	
-	private final static byte girderId = (byte) Material.CLAY.getId();
+	private Material girderMaterial;// = Material.CLAY;
 	
-	private final static Material decayedDirtMaterial = Material.SANDSTONE;
 	private final static Material dirtMaterial = Material.DIRT;
 	private final static Material stairMaterial = Material.WOOD_STAIRS;
 	private final static Material stairPlatformMaterial = Material.WOOD;
 	private final static Material wallMaterial = Material.SMOOTH_BRICK;
 	private final static Material ceilingMaterial = Material.STONE;
+	private final static Material floorMaterial = ceilingMaterial;
 	
 	protected final static int inset = 2;
 	
@@ -38,11 +38,32 @@ public class UnfinishedBuildingLot extends BuildingLot {
 		super(platmap, chunkX, chunkZ);
 		DataContext context = platmap.context;
 		
+		// material please
+		girderMaterial = platmap.generator.materialProvider.itemsSelectMaterial_UnfinishedBuildings.getRandomMaterial(chunkOdds, Material.CLAY);
+		
 		// basement only?
 		unfinishedBasementOnly = chunkOdds.playOdds(context.oddsOfOnlyUnfinishedBasements);
 		
 		// how many floors are finished?
 		floorsBuilt = chunkOdds.getRandomInt(height);
+		
+	}
+	
+	@Override
+	public boolean makeConnected(PlatLot relative) {
+		boolean result = super.makeConnected(relative);
+
+		// other bits
+		if (result && relative instanceof UnfinishedBuildingLot) {
+			UnfinishedBuildingLot relativebuilding = (UnfinishedBuildingLot) relative;
+			
+			this.girderMaterial = relativebuilding.girderMaterial;
+			if (neighborsHaveIdenticalHeights) {
+				this.unfinishedBasementOnly = relativebuilding.unfinishedBasementOnly;
+				this.floorsBuilt = relativebuilding.floorsBuilt;
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -51,17 +72,17 @@ public class UnfinishedBuildingLot extends BuildingLot {
 	}
 
 	@Override
-	public int getBottomY(WorldGenerator generator) {
+	public int getBottomY(CityWorldGenerator generator) {
 		return generator.streetLevel - FloorHeight * (depth - 1) - 3;
 	}
 	
 	@Override
-	public int getTopY(WorldGenerator generator) {
+	public int getTopY(CityWorldGenerator generator) {
 		return generator.streetLevel + FloorHeight * (height + 1) + 10; // crane bit
 	}
 
 	@Override
-	protected void generateActualChunk(WorldGenerator generator, PlatMap platmap, ByteChunk chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
+	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 
 		// check out the neighbors
 		SurroundingFloors neighborBasements = getNeighboringBasementCounts(platmap, platX, platZ);
@@ -71,35 +92,29 @@ public class UnfinishedBuildingLot extends BuildingLot {
 		int lowestY = getBottomY(generator);
 		
 		// bottom most floor
-		drawCeilings(generator, chunk, context, lowestY, 1, 0, 0, false, ceilingMaterial, neighborBasements);
+		drawFoundation(generator, chunk, context, lowestY, 1, false, false, floorMaterial, neighborBasements);
 		
 		// below ground
 		for (int floor = 0; floor < depth; floor++) {
 			int floorAt = generator.streetLevel - FloorHeight * floor - 2;
 			
 			// clear it out
-			chunk.setLayer(floorAt, FloorHeight, getAirId(generator, FloorHeight));
+			chunk.airoutLayer(generator, floorAt, FloorHeight);
 			
 			// at the first floor add a fence to prevent folks from falling in
 			if (floor == 0)
-				drawFence(generator, chunk, context, 0, generator.streetLevel + 1, neighborBasements);
+				drawFence(generator, chunk, context, 0, generator.streetLevel + 1, floor, neighborBasements, Material.IRON_FENCE, 3);
 			
 			// one floor please
-			if (generator.settings.includeDecayedNature) {
-				drawExteriorParts(generator, chunk, context, floorAt, FloorHeight, 0, 0,
-						false, decayedDirtMaterial, decayedDirtMaterial, neighborBasements);
-			} else {
-				drawExteriorParts(generator, chunk, context, floorAt, FloorHeight, 0, 0,
-						false, dirtMaterial, dirtMaterial, neighborBasements);
-			}
-			
-			drawExteriorParts(generator, chunk, context, floorAt, FloorHeight, 1, 1,
-					false, wallMaterial, wallMaterial, neighborBasements);
+			drawWallParts(generator, chunk, context, floorAt, FloorHeight, 0, 0, floor,
+					false, false, false, dirtMaterial, neighborBasements);
+			drawWallParts(generator, chunk, context, floorAt, FloorHeight, 1, 1, floor,
+					false, false, false, wallMaterial, neighborBasements);
 			
 			// ceilings if needed
 			if (!unfinishedBasementOnly) {
 				drawCeilings(generator, chunk, context, floorAt + FloorHeight - 1, 1, 1, 1,
-						false, ceilingMaterial, neighborBasements);
+						false, false, false, ceilingMaterial, neighborBasements);
 			} else {
 				drawHorizontalGirders(chunk, floorAt + FloorHeight - 1, neighborBasements);
 			}
@@ -124,7 +139,7 @@ public class UnfinishedBuildingLot extends BuildingLot {
 					
 					// the floor of the next floor
 					drawCeilings(generator, chunk, context, floorAt + FloorHeight - 1, 1, 1, 1,
-							false, ceilingMaterial, neighborFloors);
+							false, false, false, ceilingMaterial, neighborFloors);
 				} else {
 					
 					// sometimes the top most girders aren't there quite yet
@@ -144,7 +159,7 @@ public class UnfinishedBuildingLot extends BuildingLot {
 	}
 
 	@Override
-	protected void generateActualBlocks(WorldGenerator generator, PlatMap platmap, RealChunk chunk, DataContext context, int platX, int platZ) {
+	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
 		
 		// work on the basement stairs first
 		if (!unfinishedBasementOnly) {
@@ -208,10 +223,9 @@ public class UnfinishedBuildingLot extends BuildingLot {
 				}
 			}
 		}
-		chunk.setBlock(5, 2, 5, Material.BEDROCK);
 	}
 	
-	protected boolean drawCrane(WorldGenerator generator, RealChunk chunk, DataContext context) {
+	protected boolean drawCrane(CityWorldGenerator generator, RealBlocks chunk, DataContext context) {
 		if (lastHorizontalGirder > 0 && chunkOdds.playOdds(context.oddsOfCranes)) {
 			if (chunkOdds.flipCoin())
 				chunk.drawCrane(context, chunkOdds, inset + 2, lastHorizontalGirder + 1, inset);
@@ -224,7 +238,7 @@ public class UnfinishedBuildingLot extends BuildingLot {
 	
 	private final static double decayedEdgeOdds = 0.20;
 	
-	private void decayEdge(WorldGenerator generator, int x, int y, int z) {
+	private void decayEdge(CityWorldGenerator generator, int x, int y, int z) {
 		if (chunkOdds.playOdds(decayedEdgeOdds)) {
 			
 			// make it go away
@@ -232,15 +246,15 @@ public class UnfinishedBuildingLot extends BuildingLot {
 		}	
 	}
 	
-	private void drawVerticalGirders(ByteChunk chunk, int y1, int floorHeight) {
+	private void drawVerticalGirders(InitialBlocks chunk, int y1, int floorHeight) {
 		int y2 = y1 + floorHeight;
-		chunk.setBlocks(inset, y1, y2, inset, girderId);
-		chunk.setBlocks(inset, y1, y2, chunk.width - inset - 1, girderId);
-		chunk.setBlocks(chunk.width - inset - 1, y1, y2, inset, girderId);
-		chunk.setBlocks(chunk.width - inset - 1, y1, y2, chunk.width - inset - 1, girderId);
+		chunk.setBlocks(inset, y1, y2, inset, girderMaterial);
+		chunk.setBlocks(inset, y1, y2, chunk.width - inset - 1, girderMaterial);
+		chunk.setBlocks(chunk.width - inset - 1, y1, y2, inset, girderMaterial);
+		chunk.setBlocks(chunk.width - inset - 1, y1, y2, chunk.width - inset - 1, girderMaterial);
 	}
 
-	private void drawHorizontalGirders(ByteChunk chunk, int y1, Surroundings neighbors) {
+	private void drawHorizontalGirders(InitialBlocks chunk, int y1, Surroundings neighbors) {
 		int x1 = neighbors.toWest() ? 0 : inset;
 		int x2 = neighbors.toEast() ? chunk.width - 1 : chunk.width - inset - 1;
 		int z1 = neighbors.toNorth() ? 0 : inset;
@@ -248,10 +262,10 @@ public class UnfinishedBuildingLot extends BuildingLot {
 		int i1 = inset;
 		int i2 = chunk.width - inset - 1;
 		
-		chunk.setBlocks(x1, x2 + 1, y1, y1 + 1, i1, i1 + 1, girderId);
-		chunk.setBlocks(x1, x2 + 1, y1, y1 + 1, i2, i2 + 1, girderId);
-		chunk.setBlocks(i1, i1 + 1, y1, y1 + 1, z1, z2 + 1, girderId);
-		chunk.setBlocks(i2, i2 + 1, y1, y1 + 1, z1, z2 + 1, girderId);
+		chunk.setBlocks(x1, x2 + 1, y1, y1 + 1, i1, i1 + 1, girderMaterial);
+		chunk.setBlocks(x1, x2 + 1, y1, y1 + 1, i2, i2 + 1, girderMaterial);
+		chunk.setBlocks(i1, i1 + 1, y1, y1 + 1, z1, z2 + 1, girderMaterial);
+		chunk.setBlocks(i2, i2 + 1, y1, y1 + 1, z1, z2 + 1, girderMaterial);
 	}
 	
 }

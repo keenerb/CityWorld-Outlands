@@ -1,24 +1,18 @@
 package me.daddychurchill.CityWorld.Plugins;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import org.bukkit.Material;
+
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 
 public class OreProvider_SandDunes extends OreProvider_Normal {
 
-	public OreProvider_SandDunes(WorldGenerator generator) {
+	public OreProvider_SandDunes(CityWorldGenerator generator) {
 		super(generator);
 
-		fluidId = sandId;
-		fluidFluidId = sandId;
-		fluidSurfaceId = sandId;
-		fluidSubsurfaceId = sandstoneId;
-		fluidFrozenId = snowBlockId;
-		surfaceId = sandId;
-		subsurfaceId = sandstoneId;
+		fluidMaterial = Material.SAND;
+		fluidFluidMaterial = Material.SAND;
+		fluidSurfaceMaterial = Material.SAND;
+		fluidSubsurfaceMaterial = Material.SANDSTONE;
+		fluidFrozenMaterial = Material.SANDSTONE;
 	}
-
-	@Override
-	public String getCollectionName() {
-		return "SandDunes";
-	}
-
 }

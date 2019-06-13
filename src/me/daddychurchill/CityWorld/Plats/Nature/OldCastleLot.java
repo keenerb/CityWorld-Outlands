@@ -1,24 +1,41 @@
 package me.daddychurchill.CityWorld.Plats.Nature;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.ConstructLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
+import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.RealChunk;
+import me.daddychurchill.CityWorld.Support.RealBlocks;
 
 public class OldCastleLot extends ConstructLot {
 
+	private Material platformMaterial;
+	private Material supportMaterial;
+	private Material wallMaterial;
+	
 	public OldCastleLot(PlatMap platmap, int chunkX, int chunkZ) {
 		super(platmap, chunkX, chunkZ);
 		
 		trulyIsolated = true;
+		
+		platformMaterial = platmap.generator.materialProvider.itemsSelectMaterial_Castles.getRandomMaterial(chunkOdds, Material.COBBLESTONE);
+		
+		if (chunkOdds.playOdds(Odds.oddsPrettyLikely))
+			wallMaterial = platformMaterial;
+		else
+			wallMaterial = platmap.generator.materialProvider.itemsSelectMaterial_Castles.getRandomMaterial(chunkOdds, platformMaterial);
 
-		//platmap.generator.reportMessage("CASTLE AT " + (chunkX * 16) + ", " + (chunkZ * 16));
+		if (chunkOdds.playOdds(Odds.oddsSomewhatLikely))
+			supportMaterial = platformMaterial;
+		else
+			supportMaterial = platmap.generator.materialProvider.itemsSelectMaterial_Castles.getRandomMaterial(chunkOdds, platformMaterial);
+		
 	}
 	
 	@Override
@@ -26,26 +43,22 @@ public class OldCastleLot extends ConstructLot {
 		return new OldCastleLot(platmap, chunkX, chunkZ);
 	}
 	
-	private final static byte platformId = (byte) Material.SMOOTH_BRICK.getId();
-	private final static byte supportId = (byte) Material.COBBLESTONE.getId();
-	private final static byte wallId = platformId;
-	
 	@Override
-	public int getBottomY(WorldGenerator generator) {
-		return maxHeight - 1;
+	public int getBottomY(CityWorldGenerator generator) {
+		return blockYs.maxHeight - 1;
 	}
 	
 	@Override
-	public int getTopY(WorldGenerator generator) {
+	public int getTopY(CityWorldGenerator generator) {
 		return getBottomY(generator) + DataContext.FloorHeight * 4 + 1;
 	}
 
 	@Override
-	protected void generateActualChunk(WorldGenerator generator, PlatMap platmap, ByteChunk chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
+	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 		
 		// main bits
 		int floorHeight = DataContext.FloorHeight;
-		int y1 = minHeight + ((maxHeight - minHeight) / 3 * 2);
+		int y1 = blockYs.minHeight + ((blockYs.maxHeight - blockYs.minHeight) / 3 * 2);
 		int y2 = y1 + floorHeight;
 		int y3 = y2 + floorHeight;
 		int originX = chunk.getOriginX();
@@ -69,34 +82,34 @@ public class OldCastleLot extends ConstructLot {
 //		chunk.setBlocks(12, 14, minHeight, maxHeight - 1, 12, 14, supportId);
 
 		// platform
-		chunk.setWalls(2, 14, minHeight, y1 - 2, 2, 14, supportId);
+		chunk.setWalls(2, 14, blockYs.minHeight, y1 - 2, 2, 14, supportMaterial);
 		for (int i = 4; i < 11; i += 3) {
-			chunk.setBlocks(i, i + 2, minHeight, y1 - 2, 1, 2, supportId);
-			chunk.setBlocks(i, i + 2, minHeight, y1 - 2, 14, 15, supportId);
-			chunk.setBlocks(1, 2, minHeight, y1 - 2, i, i + 2, supportId);
-			chunk.setBlocks(14, 15, minHeight, y1 - 2, i, i + 2, supportId);
+			chunk.setBlocks(i, i + 2, blockYs.minHeight, y1 - 2, 1, 2, supportMaterial);
+			chunk.setBlocks(i, i + 2, blockYs.minHeight, y1 - 2, 14, 15, supportMaterial);
+			chunk.setBlocks(1, 2, blockYs.minHeight, y1 - 2, i, i + 2, supportMaterial);
+			chunk.setBlocks(14, 15, blockYs.minHeight, y1 - 2, i, i + 2, supportMaterial);
 		}
-		chunk.setBlocks(1, 15, y1 - 2, 1, 15, supportId);
+		chunk.setBlocks(1, 15, y1 - 2, 1, 15, supportMaterial);
 		
 		// clear things out a bit
-		chunk.setBlocks(0, 16, y1, maxHeight + 2, 0, 16, getAirId(generator, y1));
+		chunk.airoutBlocks(generator, 0, 16, y1, blockYs.maxHeight + 2, 0, 16, true);
 		
 		// add the first layer
-		chunk.setLayer(y1 - 1, platformId);
-		chunk.setWalls(0, 11, y1, y2, 0, 6, wallId);
-		chunk.setWalls(10, 16, y1, y2, 0, 11, wallId);
-		chunk.setWalls(5, 16, y1, y2, 10, 16, wallId);
-		chunk.setWalls(0, 6, y1, y2, 5, 16, wallId);
-		chunk.setWalls(0, 16, y2, y2 + 1, 0, 16, wallId);
-		chunk.setBlocks(1, 15, y2, 1, 15, platformId);
-		chunk.setWalls(0, 16, y2 + 1, y2 + 2, 0, 16, supportId);
+		chunk.setLayer(y1 - 1, platformMaterial);
+		chunk.setWalls(0, 11, y1, y2, 0, 6, wallMaterial);
+		chunk.setWalls(10, 16, y1, y2, 0, 11, wallMaterial);
+		chunk.setWalls(5, 16, y1, y2, 10, 16, wallMaterial);
+		chunk.setWalls(0, 6, y1, y2, 5, 16, wallMaterial);
+		chunk.setWalls(0, 16, y2, y2 + 1, 0, 16, wallMaterial);
+		chunk.setBlocks(1, 15, y2, 1, 15, platformMaterial);
+		chunk.setWalls(0, 16, y2 + 1, y2 + 2, 0, 16, supportMaterial);
 		
 		// add trim
 		for (int i = 0; i < 13; i += 3) {
-			chunk.setBlock(i, y2 + 2, 0, supportId);
-			chunk.setBlock(15 - i, y2 + 2, 15, supportId);
-			chunk.setBlock(15, y2 + 2, i, supportId);
-			chunk.setBlock(0, y2 + 2, 15 - i, supportId);
+			chunk.setBlock(i, y2 + 2, 0, supportMaterial);
+			chunk.setBlock(15 - i, y2 + 2, 15, supportMaterial);
+			chunk.setBlock(15, y2 + 2, i, supportMaterial);
+			chunk.setBlock(0, y2 + 2, 15 - i, supportMaterial);
 		}
 		
 		// add retaining walls if needed
@@ -124,23 +137,23 @@ public class OldCastleLot extends ConstructLot {
 		buildTower(generator, chunk, thirdX1, y3, thirdZ1, 5);
 	}
 	
-	private void buildWall(ByteChunk chunk, int x, int y1, int y2, int z) {
+	private void buildWall(InitialBlocks chunk, int x, int y1, int y2, int z) {
 		if (y2 > y1)
-			chunk.setBlocks(x, y1, y2 + 2, z, supportId);
+			chunk.setBlocks(x, y1, y2 + 2, z, supportMaterial);
 	}
 	
-	private void buildTower(WorldGenerator generator, ByteChunk chunk, int x, int y1, int z, int width) {
+	private void buildTower(CityWorldGenerator generator, InitialBlocks chunk, int x, int y1, int z, int width) {
 		int y2 = y1 + DataContext.FloorHeight;
-		chunk.setWalls(x, x + width, y1 + 1, y2 + 1, z, z + width, wallId);
-		chunk.setBlocks(x + 1, x + width - 1, y2, z + 1, z + width - 1, platformId);
+		chunk.setWalls(x, x + width, y1 + 1, y2 + 1, z, z + width, wallMaterial);
+		chunk.setBlocks(x + 1, x + width - 1, y2, z + 1, z + width - 1, platformMaterial);
 
 		// add trim
-		chunk.setWalls(x, x + width, y2 + 1, y2 + 2, z, z + width, supportId);
+		chunk.setWalls(x, x + width, y2 + 1, y2 + 2, z, z + width, supportMaterial);
 		for (int i = 0; i < width - 1; i += 2) {
-			chunk.setBlock(x + i, y2 + 2, z, supportId);
-			chunk.setBlock(x + width - 1 - i, y2 + 2, z + width - 1, supportId);
-			chunk.setBlock(x, y2 + 2, z + width - 1 - i, supportId);
-			chunk.setBlock(x + width - 1, y2 + 2, z + i, supportId);
+			chunk.setBlock(x + i, y2 + 2, z, supportMaterial);
+			chunk.setBlock(x + width - 1 - i, y2 + 2, z + width - 1, supportMaterial);
+			chunk.setBlock(x, y2 + 2, z + width - 1 - i, supportMaterial);
+			chunk.setBlock(x + width - 1, y2 + 2, z + i, supportMaterial);
 			
 			// windows
 			if (i > 0) {
@@ -152,27 +165,30 @@ public class OldCastleLot extends ConstructLot {
 		}
 	}
 	
-	private void punchOutWindow(WorldGenerator generator, ByteChunk chunk, int x, int y, int z) {
+	private void punchOutWindow(CityWorldGenerator generator, InitialBlocks chunk, int x, int y, int z) {
 		if (chunkOdds.flipCoin())
-			chunk.setBlocks(x, y, y + 1 + chunkOdds.getRandomInt(2), z, getAirId(generator, y));
+			chunk.airoutBlocks(generator, x, y, y + 1 + chunkOdds.getRandomInt(2), z, true);
 	}
 	
-	private void punchOutNSDoor(WorldGenerator generator, ByteChunk chunk, int x, int y, int z) {
+	private void punchOutNSDoor(CityWorldGenerator generator, InitialBlocks chunk, int x, int y, int z) {
 		if (chunkOdds.flipCoin())
-			chunk.setBlocks(x, x + 1, y, y + 3, z, z + 2, getAirId(generator, y));
+			chunk.airoutBlocks(generator, x, x + 1, y, y + 3, z, z + 2, true);
 	}
 	
-	private void punchOutWEDoor(WorldGenerator generator, ByteChunk chunk, int x, int y, int z) {
+	private void punchOutWEDoor(CityWorldGenerator generator, InitialBlocks chunk, int x, int y, int z) {
 		if (chunkOdds.flipCoin())
-			chunk.setBlocks(x, x + 2, y, y + 3, z, z + 1, getAirId(generator, y));
+			chunk.airoutBlocks(generator, x, x + 2, y, y + 3, z, z + 1, true);
 	}
+	
+	private static int insetChaos = 3;
 	
 	@Override
-	protected void generateActualBlocks(WorldGenerator generator, PlatMap platmap, RealChunk chunk, DataContext context, int platX, int platZ) {
+	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
+		reportLocation(generator, "Castle", chunk);
 		
 		// main bits
 		int floorHeight = DataContext.FloorHeight;
-		int y1 = minHeight + ((maxHeight - minHeight) / 3 * 2);
+		int y1 = blockYs.minHeight + ((blockYs.maxHeight - blockYs.minHeight) / 3 * 2);
 		int y2 = y1 + floorHeight;
 		int y3 = y2 + floorHeight;
 		int originX = chunk.getOriginX();
@@ -184,9 +200,13 @@ public class OldCastleLot extends ConstructLot {
 //		int thirdX1 = chunkRandom.nextBoolean() ? secondX1 : secondX1 + 4;
 //		int thirdZ1 = chunkRandom.nextBoolean() ? secondZ1 : secondZ1 + 4;
 		
-		// ex-castle
-		generator.decayBlocks.destroyWithin(originX + 3, originX + 13, y1, y3, originZ + 3, originZ + 13);
-//		destroyLot(generator, y1, y3 + floorHeight);
-		chunk.setBlock(11, 2, 11, Material.BEDROCK);
+		// always an ex-castle
+		generator.decayBlocks.destroyWithin(originX + insetChaos, originX + 16 - insetChaos, y1, y3, originZ + insetChaos, originZ + 16 - insetChaos);
+		
+		// who is the king of the hill
+		int x = 7;
+		int z = 7;
+		int y = chunk.findFirstEmpty(x, y2, z, y1, y3);
+		generator.spawnProvider.spawnBeing(generator, chunk, chunkOdds, x, y, z, EntityType.IRON_GOLEM, EntityType.WITCH);
 	}
 }

@@ -2,14 +2,20 @@ package me.daddychurchill.CityWorld.Plugins;
 
 import java.util.Random;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
-import me.daddychurchill.CityWorld.Context.DataContext;
+import org.bukkit.configuration.ConfigurationSection;
+
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Support.Odds;
 
 public abstract class OdonymProvider extends Provider {
 
-	public abstract String[] generateNorthSouthOdonym(WorldGenerator generator, int x, int z);
-	public abstract String[] generateWestEastOdonym(WorldGenerator generator, int x, int z);
+	public abstract String[] generateFossilOdonym(CityWorldGenerator generator, Odds odds);
+	public abstract String[] generateNorthSouthStreetOdonym(CityWorldGenerator generator, int x, int z);
+	public abstract String[] generateWestEastStreetOdonym(CityWorldGenerator generator, int x, int z);
+	public abstract String generateVillagerName(CityWorldGenerator generator, Odds odds);
+	
+	public abstract void read(CityWorldGenerator generator, ConfigurationSection section);
+	public abstract void write(CityWorldGenerator generator, ConfigurationSection section);
 	
 	// yep it is a little one... we will make it bigger in a moment
 	int baseSeed;
@@ -29,21 +35,21 @@ public abstract class OdonymProvider extends Provider {
 		}
 	}
 	
-	private final static double oddsOfDecay = DataContext.oddsExtremelyLikely;
+	private final static double oddsOfDecay = Odds.oddsExtremelyLikely;
 	
 	public String decayLine(Odds odds, String line) {
-		String result = "";
+		StringBuffer result = new StringBuffer();
 		for (int i = 0; i < line.length(); i++) {
 			if (odds.playOdds(oddsOfDecay))
-				result = result + line.charAt(i);
+				result.append(line.charAt(i));
 			else
-				result = result + ' ';
+				result.append(' ');
 		}
-		return result;
+		return result.toString();
 	}
 	
 	// Based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
-	public static OdonymProvider loadProvider(WorldGenerator generator, Odds odds) {
+	public static OdonymProvider loadProvider(CityWorldGenerator generator, Odds odds) {
 
 		OdonymProvider provider = null;
 		

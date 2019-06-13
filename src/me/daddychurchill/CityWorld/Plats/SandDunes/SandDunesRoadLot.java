@@ -2,7 +2,7 @@ package me.daddychurchill.CityWorld.Plats.SandDunes;
 
 import org.bukkit.Material;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plats.RoadLot;
 import me.daddychurchill.CityWorld.Support.PlatMap;
@@ -22,12 +22,12 @@ public class SandDunesRoadLot extends RoadLot {
 	}
 	
 	@Override
-	protected byte getSidewalkId() {
-		return (byte) Material.DOUBLE_STEP.getId();
+	protected Material getSidewalkMaterial() {
+		return Material.DOUBLE_STEP;
 	}
 	
 	@Override
-	protected int getSidewalkLevel(WorldGenerator generator) {
-		return generator.streetLevel;
+	protected int getSidewalkLevel(CityWorldGenerator generator) {
+		return super.getSidewalkLevel(generator);
 	}
 }

@@ -1,40 +1,38 @@
 package me.daddychurchill.CityWorld.Context;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Clipboard.PasteProvider.SchematicFamily;
+import me.daddychurchill.CityWorld.Support.Odds;
 
 public class ConstructionContext extends UrbanContext {
 
-	public ConstructionContext(WorldGenerator generator) {
+	public ConstructionContext(CityWorldGenerator generator) {
 		super(generator);
-	}
-	
-	@Override
-	protected void initialize() {
-		super.initialize();
 
-		oddsOfParks = oddsUnlikely;
-		oddsOfIsolatedLots = oddsLikely;
-		oddsOfIdenticalBuildingHeights = oddsExtremelyLikely;
-		oddsOfSimilarBuildingHeights = oddsExtremelyLikely;
-		oddsOfSimilarBuildingRounding = oddsExtremelyLikely;
+
+		oddsOfParks = Odds.oddsUnlikely;
+		oddsOfIsolatedLots = Odds.oddsLikely;
+		oddsOfIdenticalBuildingHeights = Odds.oddsExtremelyLikely;
+		oddsOfSimilarBuildingHeights = Odds.oddsExtremelyLikely;
+		oddsOfSimilarBuildingRounding = Odds.oddsExtremelyLikely;
 		//oddsOfMissingRoad = oddsLikely;
-		oddsOfRoundAbouts = oddsLikely;
+		//oddsOfRoundAbouts = Odds.oddsSomewhatLikely;
 		 
-		oddsOfUnfinishedBuildings = oddsVeryLikely;
-		oddsOfOnlyUnfinishedBasements = oddsLikely;
-		oddsOfCranes = oddsExtremelyLikely;
+		oddsOfUnfinishedBuildings = Odds.oddsVeryLikely;
+		oddsOfOnlyUnfinishedBasements = Odds.oddsLikely;
+		oddsOfCranes = Odds.oddsExtremelyLikely;
 		
-		oddsOfStairWallMaterialIsWallMaterial = oddsExtremelyLikely;
-		oddsOfBuildingWallInset = oddsExtremelyLikely;
-		oddsOfFlatWalledBuildings = oddsExtremelyLikely;
-		oddsOfSimilarInsetBuildings = oddsExtremelyLikely;
+		oddsOfStairWallMaterialIsWallMaterial = Odds.oddsExtremelyLikely;
+		oddsOfBuildingWallInset = Odds.oddsExtremelyLikely;
+		oddsOfFlatWalledBuildings = Odds.oddsExtremelyLikely;
+		oddsOfSimilarInsetBuildings = Odds.oddsExtremelyLikely;
 		rangeOfWallInset = 2;
 		
-		schematicFamily = SchematicFamily.CONSTRUCTION;
+		setSchematicFamily(SchematicFamily.CONSTRUCTION);
+		
+		minSizeOfBuilding = 2;
 
 		maximumFloorsAbove = absoluteMaximumFloorsAbove;
 		maximumFloorsBelow = 3;
 	}
-
 }

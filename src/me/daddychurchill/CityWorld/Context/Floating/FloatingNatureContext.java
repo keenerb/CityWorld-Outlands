@@ -1,35 +1,33 @@
 package me.daddychurchill.CityWorld.Context.Floating;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.NatureContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
+import me.daddychurchill.CityWorld.Plats.PlatLot.LotStyle;
 import me.daddychurchill.CityWorld.Plats.Floating.FloatingHouseLot;
-import me.daddychurchill.CityWorld.Plats.Floating.FloatingNothingLot;
+import me.daddychurchill.CityWorld.Plats.Floating.FloatingNatureLot;
 import me.daddychurchill.CityWorld.Plugins.ShapeProvider;
 import me.daddychurchill.CityWorld.Support.HeightInfo;
 import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
 
 public class FloatingNatureContext extends NatureContext {
 
-	public FloatingNatureContext(WorldGenerator generator) {
+	public FloatingNatureContext(CityWorldGenerator generator) {
 		super(generator);
+		
+		oddsOfIsolatedConstructs = Odds.oddsUnlikely;
 	}
 	
 	@Override
-	protected void initialize() {
-		super.initialize();
-
+	public PlatLot createNaturalLot(CityWorldGenerator generator, PlatMap platmap, int x, int z) {
+		return new FloatingNatureLot(platmap, platmap.originX + x, platmap.originZ + z);
 	}
 
 	@Override
-	public PlatLot createNaturalLot(WorldGenerator generator, PlatMap platmap, int x, int z) {
-		return new FloatingNothingLot(platmap, platmap.originX + x, platmap.originZ + z);
-	}
-
-	@Override
-	public void populateMap(WorldGenerator generator, PlatMap platmap) {
+	public void populateMap(CityWorldGenerator generator, PlatMap platmap) {
+		super.populateMap(generator, platmap);
 		
 		//TODO, Nature doesn't handle schematics quite right yet
 		// let the user add their stuff first, then plug any remaining holes with our stuff
@@ -48,11 +46,12 @@ public class FloatingNatureContext extends NatureContext {
 		for (int x = 0; x < PlatMap.Width; x++) {
 			for (int z = 0; z < PlatMap.Width; z++) {
 				PlatLot current = platmap.getLot(x, z);
-				if (current == null) {
+				if (current == null || current.style == LotStyle.NATURE) {
+//				if (current == null) {
 					
 					// what is the world location of the lot?
-					int blockX = (originX + x) * SupportChunk.chunksBlockWidth;
-					int blockZ = (originZ + z) * SupportChunk.chunksBlockWidth;
+					int blockX = (originX + x) * SupportBlocks.sectionBlockWidth;
+					int blockZ = (originZ + z) * SupportBlocks.sectionBlockWidth;
 					
 					// get the height info for this chunk
 					heights = HeightInfo.getHeightsFaster(generator, blockX, blockZ);

@@ -1,7 +1,8 @@
 package me.daddychurchill.CityWorld;
 
 import me.daddychurchill.CityWorld.Context.DataContext;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,13 +39,13 @@ public class CommandCityLines implements CommandExecutor {
 				// arguments?
 				try {
 					if (split.length >= 1) {
-						widthX = Math.min(1, Math.max(8, Integer.parseInt(split[0])));
+						widthX = Math.min(8, Math.max(1, Integer.parseInt(split[0])));
 						if (split.length >= 2) {
-							widthZ = Math.min(1, Math.max(8, Integer.parseInt(split[1])));
+							widthZ = Math.min(8, Math.max(1, Integer.parseInt(split[1])));
 							if (split.length >= 3) {
-								floorsUp = Math.min(1, Math.max(16, Integer.parseInt(split[2])));
+								floorsUp = Math.min(16, Math.max(1, Integer.parseInt(split[2])));
 								if (split.length >= 4) {
-									floorsDown = Math.min(0, Math.max(4, Integer.parseInt(split[3])));
+									floorsDown = Math.min(4, Math.max(0, Integer.parseInt(split[3])));
 								}
 							}
 						}
@@ -65,20 +66,20 @@ public class CommandCityLines implements CommandExecutor {
 					World world = player.getWorld();
 					Location location = player.getLocation();
 					Chunk chunk = world.getChunkAt(location);
-					int areaX1 = chunk.getX() * SupportChunk.chunksBlockWidth;
-					int areaX2 = areaX1 + widthX * SupportChunk.chunksBlockWidth;
+					int areaX1 = chunk.getX() * SupportBlocks.sectionBlockWidth;
+					int areaX2 = areaX1 + widthX * SupportBlocks.sectionBlockWidth;
 					int groundY = location.getBlockY();
-					int areaZ1 = chunk.getZ() * SupportChunk.chunksBlockWidth;
-					int areaZ2 = areaZ1 + widthZ * SupportChunk.chunksBlockWidth;
+					int areaZ1 = chunk.getZ() * SupportBlocks.sectionBlockWidth;
+					int areaZ2 = areaZ1 + widthZ * SupportBlocks.sectionBlockWidth;
 					
 					// place markers
 					for (int x = 0; x <= widthX; x++) {
-						int markerX = areaX1 + x * SupportChunk.chunksBlockWidth;
+						int markerX = areaX1 + x * SupportBlocks.sectionBlockWidth;
 						placeMarker(world, markerX, groundY, areaZ1 - 1, floorsUp, floorsDown);
 						placeMarker(world, markerX, groundY, areaZ2 + 1, floorsUp, floorsDown);
 					}
 					for (int z = 0; z <= widthZ; z++) {
-						int markerZ = areaZ1 + z * SupportChunk.chunksBlockWidth;
+						int markerZ = areaZ1 + z * SupportBlocks.sectionBlockWidth;
 						placeMarker(world, areaX1 - 1, groundY, markerZ, floorsUp, floorsDown);
 						placeMarker(world, areaX2 + 1, groundY, markerZ, floorsUp, floorsDown);
 					}

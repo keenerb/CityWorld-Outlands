@@ -4,282 +4,46 @@ import java.util.Stack;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import me.daddychurchill.CityWorld.WorldGenerator;
+import org.bukkit.material.MaterialData;
+
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 
-public class WorldBlocks extends SupportChunk {
+public final class WorldBlocks extends SupportBlocks {
 	
-	//WARNING: the x,z coordinates in this variant of SupportChunk are world absolute (unlike byte and real chunks)
+	//====================
+	//WARNING: the x,z coordinates in this variant of SupportSection are world absolute (unlike init and real sections)
+	//====================
 
-	private boolean doPhysics;
-//	WorldGenerator generator;
-	Odds odds;
+	protected Odds odds;
+	protected int farthestFall;
 	
-	public WorldBlocks(WorldGenerator generator, Odds odds) {
+	public WorldBlocks(CityWorldGenerator generator, Odds odds) {
 		super(generator);
 		
-		doPhysics = false;
-//		this.generator = generator;
 		this.odds = odds;
+		this.farthestFall = generator.streetLevel - 6; // just a bit more
 	}
 
-	public boolean getDoPhysics() {
-		return doPhysics;
-	}
-	
-	public void setDoPhysics(boolean dophysics) {
-		doPhysics = dophysics;
-	}
-
+	@Override
 	public Block getActualBlock(int x, int y, int z) {
 		return world.getBlockAt(x, y, z);
 	}
 	
 	@Override
-	public int getBlockType(int x, int y, int z) {
-		return getActualBlock(x, y, z).getTypeId();
+	public boolean isSurroundedByEmpty(int x, int y, int z) {
+		return isEmpty(x - 1, y, z) && 
+				isEmpty(x + 1, y, z) &&
+				isEmpty(x, y, z - 1) && 
+				isEmpty(x, y, z + 1);
 	}
 	
 	@Override
-	public void setBlock(int x, int y, int z, byte materialId) {
-		world.getBlockAt(x, y, z).setTypeIdAndData(materialId, (byte) 0, doPhysics);
-	}
-
-	@Override
-	public void setBlocks(int x1, int x2, int y, int z1, int z2, byte materialId) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				world.getBlockAt(x, y, z).setTypeIdAndData(materialId, (byte) 0, doPhysics);
-			}
-		}
-	}
-	
-	@Override
-	public void setBlocks(int x, int y1, int y2, int z, byte type) {
-		for (int y = y1; y < y2; y++)
-			world.getBlockAt(x, y, z).setTypeIdAndData(type, (byte) 0, doPhysics);
-	}
-
-	public void setBlock(int x, int y, int z, Material material) {
-		world.getBlockAt(chunkX + x, y, chunkZ + z).setTypeId(material.getId(), doPhysics);
-	}
-
-	public void setBlock(int x, int y, int z, int type, byte data) {
-		world.getBlockAt(chunkX + x, y, chunkZ + z).setTypeIdAndData(type, data, doPhysics);
-	}
-	
-	public void setBlock(int x, int y, int z, Material material, boolean aDoPhysics) {
-		world.getBlockAt(chunkX + x, y, chunkZ + z).setTypeId(material.getId(), aDoPhysics);
-	}
-
-	public void setBlock(int x, int y, int z, int type, byte data, boolean aDoPhysics) {
-		world.getBlockAt(chunkX + x, y, chunkZ + z).setTypeIdAndData(type, data, aDoPhysics);
-	}
-	
-	public void setBlocks(int x, int y1, int y2, int z, Material material) {
-		for (int y = y1; y < y2; y++)
-			world.getBlockAt(x, y, z).setType(material);
-	}
-
-	public void setBlocks(int x1, int x2, int y1, int y2, int z1, int z2, Material material) {
-		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				for (int z = z1; z < z2; z++) {
-					world.getBlockAt(x, y, z).setType(material);
-				}
-			}
-		}
-	}
-
-	public void setBlocks(int x, int y1, int y2, int z, Material material, byte data) {
-		for (int y = y1; y < y2; y++)
-			world.getBlockAt(x, y, z).setTypeIdAndData(material.getId(), data, doPhysics);
-	}
-
-	public void setBlocks(int x, int y1, int y2, int z, Material material, byte data, boolean aDoPhysics) {
-		for (int y = y1; y < y2; y++)
-			world.getBlockAt(x, y, z).setTypeIdAndData(material.getId(), data, aDoPhysics);
-	}
-
-	public void setBlocks(int x1, int x2, int y1, int y2, int z1, int z2, Material material, byte data, boolean aDoPhysics) {
-		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				for (int z = z1; z < z2; z++) {
-					world.getBlockAt(x, y, z).setTypeIdAndData(material.getId(), data, aDoPhysics);
-				}
-			}
-		}
-	}
-
-	public void setBlocks(int x1, int x2, int y1, int y2, int z1, int z2, Material material, byte data) {
-		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				for (int z = z1; z < z2; z++) {
-					world.getBlockAt(x, y, z).setTypeIdAndData(material.getId(), data, doPhysics);
-				}
-			}
-		}
-	}
-
-	public void setBlocks(int x1, int x2, int y1, int y2, int z1, int z2, int type, byte data) {
-		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				for (int z = z1; z < z2; z++) {
-					world.getBlockAt(x, y, z).setTypeIdAndData(type, data, doPhysics);
-				}
-			}
-		}
-	}
-	
-	@Override
-	public void clearBlock(int x, int y, int z) {
-		world.getBlockAt(x, y, z).setType(Material.AIR);
-	}
-
-	@Override
-	public void clearBlocks(int x, int y1, int y2, int z) {
-		for (int y = y1; y < y2; y++) {
-			world.getBlockAt(x, y, z).setTypeIdAndData(airId, (byte) 0, doPhysics);
-		}
-	}
-
-	@Override
-	public void clearBlocks(int x1, int x2, int y1, int y2, int z1, int z2) {
-		for (int x = x1; x < x2; x++) {
-			for (int y = y1; y < y2; y++) {
-				for (int z = z1; z < z2; z++) {
-					world.getBlockAt(x, y, z).setTypeIdAndData(airId, (byte) 0, doPhysics);
-				}
-			}
-		}
-	}
-	public void setBlocks(int x1, int x2, int y, int z1, int z2, Material material) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				world.getBlockAt(x, y, z).setTypeId(material.getId(), doPhysics);
-			}
-		}
-	}
-
-	public void setBlocks(int x1, int x2, int y, int z1, int z2, Material material, boolean aDoPhysics) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				world.getBlockAt(x, y, z).setTypeId(material.getId(), aDoPhysics);
-			}
-		}
-	}
-
-	public void setBlocks(int x1, int x2, int y, int z1, int z2, Material material, byte data, boolean aDoPhysics) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				world.getBlockAt(x, y, z).setTypeIdAndData(material.getId(), data, aDoPhysics);
-			}
-		}
-	}
-
-	public void setBlocks(int x1, int x2, int y, int z1, int z2, Material material, byte data) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				world.getBlockAt(x, y, z).setTypeIdAndData(material.getId(), data, doPhysics);
-			}
-		}
-	}
-
-	public void setWalls(int x1, int x2, int y1, int y2, int z1, int z2, Material material) {
-		setBlocks(x1, x2, y1, y2, z1, z1 + 1, material);
-		setBlocks(x1, x2, y1, y2, z2 - 1, z2, material);
-		setBlocks(x1, x1 + 1, y1, y2, z1 + 1, z2 - 1, material);
-		setBlocks(x2 - 1, x2, y1, y2, z1 + 1, z2 - 1, material);
-	}
-	
-	public void setWalls(int x1, int x2, int y1, int y2, int z1, int z2, int type, byte data) {
-		setBlocks(x1, x2, y1, y2, z1, z1 + 1, type, data);
-		setBlocks(x1, x2, y1, y2, z2 - 1, z2, type, data);
-		setBlocks(x1, x1 + 1, y1, y2, z1 + 1, z2 - 1, type, data);
-		setBlocks(x2 - 1, x2, y1, y2, z1 + 1, z2 - 1, type, data);
-	}
-	
-	public boolean setEmptyBlock(int x, int y, int z, Material material) {
-		Block block = world.getBlockAt(x, y, z);
-		if (block.isEmpty()) {
-			return block.setTypeId(material.getId(), doPhysics);
-		} else
-			return false;
-	}
-
-	public boolean setEmptyBlock(int x, int y, int z, int type, byte data) {
-		Block block = world.getBlockAt(x, y, z);
-		if (block.isEmpty()) {
-			return block.setTypeIdAndData(type, data, doPhysics);
-		} else
-			return false;
-	}
-	
-	public boolean setEmptyBlock(int x, int y, int z, Material material, boolean aDoPhysics) {
-		Block block = world.getBlockAt(x, y, z);
-		if (block.isEmpty()) {
-			return block.setTypeId(material.getId(), aDoPhysics);
-		} else
-			return false;
-	}
-
-	public boolean setEmptyBlock(int x, int y, int z, int type, byte data, boolean aDoPhysics) {
-		Block block = world.getBlockAt(x, y, z);
-		if (block.isEmpty()) {
-			return block.setTypeIdAndData(type, data, aDoPhysics);
-		} else
-			return false;
-	}
-	
-	public void setEmptyBlocks(int x1, int x2, int y, int z1, int z2, Material material) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				Block block = world.getBlockAt(x, y, z);
-				if (block.isEmpty())
-					block.setType(material);
-			}
-		}
-	}
-	
-	public void setEmptyBlocks(int x1, int x2, int y, int z1, int z2, int type, byte data, boolean aDoPhysics) {
-		for (int x = x1; x < x2; x++) {
-			for (int z = z1; z < z2; z++) {
-				Block block = world.getBlockAt(x, y, z);
-				if (block.isEmpty())
-					block.setTypeIdAndData(type, data, aDoPhysics);
-			}
-		}
-	}
-	
-	public int findLastEmptyAbove(int x, int y, int z) {
-		int y1 = y;
-		while (y1 < height - 1 && world.getBlockAt(x, y1 + 1, z).isEmpty()) {
-			y1++;
-		}
-		return y1;
-	}
-	
-	public int findLastEmptyBelow(int x, int y, int z) {
-		int y1 = y;
-		while (y1 > 0 && world.getBlockAt(x, y1 - 1, z).isEmpty()) {
-			y1--;
-		}
-		return y1;
-	}
-	
-	public int setLayer(int blocky, Material material) {
-		setBlocks(0, width, blocky, blocky + 1, 0, width, material);
-		return blocky + 1;
-	}
-
-	public int setLayer(int blocky, int height, Material material) {
-		setBlocks(0, width, blocky, blocky + height, 0, width, material);
-		return blocky + height;
-	}
-
-	public int setLayer(int blocky, int height, int inset, Material material) {
-		setBlocks(inset, width - inset, blocky, blocky + height, inset, width - inset, material);
-		return blocky + height;
+	public boolean isByWater(int x, int y, int z) {
+		return isWater(x - 1, y, z) || 
+				isWater(x + 1, y, z) ||
+				isWater(x, y, z - 1) || 
+				isWater(x, y, z + 1);
 	}
 	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
@@ -303,22 +67,23 @@ public class WorldBlocks extends SupportChunk {
 	}
 	
 	private static class debrisItem {
-		int typeId;
-		byte data;
+		protected Material oldMaterial;
+		protected MaterialData oldData;
 		
-		public debrisItem(int typeId, byte data) {
-			this.typeId = typeId;
-			this.data = data;
+		public debrisItem(Block block) {
+			oldMaterial = block.getType();
+			oldData = block.getState().getData().clone();
 		}
 	}
 	
 	private void disperseLine(int x1, int x2, int y, int z1, int z2, Stack<debrisItem> debris) {
 		for (int x = x1; x < x2; x++) {
 			for (int z = z1; z < z2; z++) {
-				Block block = world.getBlockAt(x, y, z);
+				Block block = getActualBlock(x, y, z);
 				if (!block.isEmpty()) {
-					debris.push(new debrisItem(block.getTypeId(), block.getData()));
-					block.setTypeId(airId);
+					if (!isNonstackableBlock(block))
+						debris.push(new debrisItem(block));
+					block.setType(Material.AIR);
 				}
 			}
 		}
@@ -361,8 +126,7 @@ public class WorldBlocks extends SupportChunk {
 		disperseCircle(cx, cz, r, cy, debris);
 	}
 	
-	private final static double oddsOfDebris = DataContext.oddsPrettyLikely;
-	
+	private static double oddsOfDebris = Odds.oddsLikely;//Odds.oddsPrettyLikely; // Reduced the amount of debris to speed things up
 	private void sprinkleDebris(int cx, int cy, int cz, int radius, Stack<debrisItem> debris) {
 
 		// calculate a few things
@@ -383,18 +147,14 @@ public class WorldBlocks extends SupportChunk {
 				// where do we drop it?
 				int x = x1 + odds.getRandomInt(r4);
 				int z = z1 + odds.getRandomInt(r4);
-				int y = findLastEmptyBelow(x, cy, z);
+				int y = findLastEmptyBelow(x, cy, z, farthestFall);
 				
-				// look out for half blocks
-				Block block = getActualBlock(x, y - 1, z);
-				int blockId = block.getTypeId();
-				
-				// partial blocks
-				if (blockId == stepStoneId || blockId == snowId)
-					block.setTypeIdAndData(item.typeId, item.data, false);
-				
-				// other blocks?
-				else {
+				// not too far?
+				//TODO: I think this is a bit wrong. For example we should be removing/ignoring non-stackable blocks as we search for a resting point
+				if (y >= farthestFall) {
+					
+					// look out for invalid blocks
+					Block block = getActualBlock(x, y - 1, z);
 					
 					// find the bottom of the pool
 					if (block.isLiquid()) {
@@ -402,10 +162,15 @@ public class WorldBlocks extends SupportChunk {
 							y--;
 							block = getActualBlock(x, y - 1, z);
 						} while (block.isLiquid());
-					}
 					
-					// place the block
-					setBlock(x, y, z, item.typeId, item.data, false);
+					// partial height blocks?
+					} else if (isNonstackableBlock(block)) {
+						setBlock(block, item.oldMaterial, item.oldData);
+					
+					// other blocks?
+					} else {
+						setBlock(x, y, z, item.oldMaterial, item.oldData);
+					}
 				}
 			}
 		}
@@ -422,4 +187,5 @@ public class WorldBlocks extends SupportChunk {
 		// now sprinkle blocks around
 		sprinkleDebris(x, y, z, radius, debris);
 	}
+
 }

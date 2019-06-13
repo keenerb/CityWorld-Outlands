@@ -1,55 +1,39 @@
 package me.daddychurchill.CityWorld.Plats.Urban;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
-import me.daddychurchill.CityWorld.Context.DataContext;
-import me.daddychurchill.CityWorld.Plats.FinishedBuildingLot;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plugins.RoomProvider;
 import me.daddychurchill.CityWorld.Rooms.Populators.WarehouseWithBooks;
 import me.daddychurchill.CityWorld.Rooms.Populators.WarehouseWithBoxes;
+import me.daddychurchill.CityWorld.Rooms.Populators.WarehouseWithChests;
 import me.daddychurchill.CityWorld.Rooms.Populators.WarehouseWithNothing;
 import me.daddychurchill.CityWorld.Rooms.Populators.WarehouseWithRandom;
 import me.daddychurchill.CityWorld.Rooms.Populators.WarehouseWithStacks;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
 
-public class WarehouseBuildingLot extends FinishedBuildingLot {
+public class WarehouseBuildingLot extends IndustrialBuildingLot {
 	
 	private static RoomProvider contentsRandom = new WarehouseWithRandom();
 	private static RoomProvider contentsBooks = new WarehouseWithBooks();
 	private static RoomProvider contentsBoxes = new WarehouseWithBoxes();
 	private static RoomProvider contentsEmpty = new WarehouseWithNothing();
-//	private static RoomProvider contentsChests = new WarehouseWithChests();
+	private static RoomProvider contentsChests = new WarehouseWithChests();
 	private static RoomProvider contentsStacks = new WarehouseWithStacks();
 	
-	public enum ContentStyle {RANDOM, BOOKS, BOXES, EMPTY, STACKS}; // CHESTS
+	public enum ContentStyle {RANDOM, BOOKS, BOXES, EMPTY, STACKS, CHESTS};
 	private ContentStyle contentStyle;
 
 	public WarehouseBuildingLot(PlatMap platmap, int chunkX, int chunkZ) {
 		super(platmap, chunkX, chunkZ);
 		
-		firstFloorHeight = firstFloorHeight * 2;
-		height = 1;
-		depth = 0;
-		roofStyle = chunkOdds.flipCoin() ? RoofStyle.EDGED : RoofStyle.FLATTOP;
-		roofFeature = roofFeature == RoofFeature.ANTENNAS ? RoofFeature.CONDITIONERS : roofFeature;
-		
 		contentStyle = pickContentStyle();
+		firstFloorHeight = aboveFloorHeight * 2;
 	}
 	
 	protected ContentStyle pickContentStyle() {
-		switch (chunkOdds.getRandomInt(5)) {
-		case 1:
-			return ContentStyle.BOOKS;
-		case 2:
-			return ContentStyle.BOXES;
-		case 3:
-			return ContentStyle.STACKS;
-		case 4:
-			return ContentStyle.RANDOM;
-		default: 
-			return ContentStyle.EMPTY;
-		}
+		ContentStyle[] values = ContentStyle.values();
+		return values[chunkOdds.getRandomInt(values.length)];
 	}
 	
 	@Override
@@ -73,38 +57,24 @@ public class WarehouseBuildingLot extends FinishedBuildingLot {
 	}
 
 	@Override
-	public RoomProvider roomProviderForFloor(WorldGenerator generator, SupportChunk chunk, int floor, int floorY) {
+	public RoomProvider roomProviderForFloor(CityWorldGenerator generator, SupportBlocks chunk, int floor, int floorY) {
 		switch (contentStyle) {
+		default:
+		case RANDOM:
+			return contentsRandom;
 		case BOOKS:
 			return contentsBooks;
 		case BOXES:
 			return contentsBoxes;
+		case EMPTY:
+			return contentsEmpty;
 		case STACKS:
 			return contentsStacks;
-		case RANDOM:
-			return contentsRandom;
-		default:
-			return contentsEmpty;
+		case CHESTS:
+			return contentsChests;
 		}
 	}
 	
-	@Override
-	protected void calculateOptions(DataContext context) {
-		
-		// how do the walls inset?
-		insetWallWE = 1;
-		insetWallNS = 1;
-		
-		// what about the ceiling?
-		insetCeilingWE = insetWallWE;
-		insetCeilingNS = insetWallNS;
-		
-		// nudge in a bit more as we go up
-		insetInsetMidAt = 1;
-		insetInsetHighAt = 1;
-		insetInsetted = false;
-	}
-
 	@Override
 	protected InteriorStyle pickInteriorStyle() {
 		switch (chunkOdds.getRandomInt(10)) {
@@ -123,16 +93,4 @@ public class WarehouseBuildingLot extends FinishedBuildingLot {
 			return InteriorStyle.COLUMNS_OFFICES;
 		}
 	}
-
-	@Override
-	protected RoofStyle pickRoofStyle() {
-		switch (chunkOdds.getRandomInt(3)) {
-		case 1:
-			return RoofStyle.EDGED;
-		default:
-			return RoofStyle.FLATTOP;
-		}
-	}
-	
-	
 }

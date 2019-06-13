@@ -3,6 +3,7 @@ package me.daddychurchill.CityWorld.Plugins.PhatLoot;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plugins.LootProvider;
 import me.daddychurchill.CityWorld.Support.Odds;
 
@@ -20,7 +21,7 @@ public class LootProvider_Phat extends LootProvider {
 	}
 	
 	@Override
-	public void setLoot(Odds odds, String worldPrefix, LootLocation lootLocation, Block block) {
+	public void setLoot(CityWorldGenerator generator, Odds odds, String worldPrefix, LootLocation lootLocation, Block block) {
 		String name = worldPrefix + "_" + lootLocation;
 		PhatLoot phatLoot = getByName(name);
 		phatLoot.addChest(block);
@@ -38,8 +39,14 @@ public class LootProvider_Phat extends LootProvider {
 			
 			// save everything
 			Iterator<PhatLoot> aPhatLoot = phatLoots.iterator();
-			while (aPhatLoot.hasNext())
-				aPhatLoot.next().saveChests();
+			while (aPhatLoot.hasNext()) {
+				PhatLoot loot = aPhatLoot.next();
+				
+				// sometimes hasNext is true but there really isn't a next... go figure
+				// reported by EODStevens on SpigotMC.org
+				if (loot != null)
+					loot.saveChests();
+			}
 			
 			// for get about it!
 			phatLoots.clear();
@@ -60,25 +67,26 @@ public class LootProvider_Phat extends LootProvider {
 	}
 
 	private static String name = "PhatLoots";
-	public static LootProvider loadPhatLoots() {
+	public static LootProvider loadPhatLoots(CityWorldGenerator generator) {
 
 		PhatLoots phatLoots = null;
 
-		PluginManager pm = Bukkit.getServer().getPluginManager();
-
 		try {
-			phatLoots = (PhatLoots) pm.getPlugin(name);
-		} catch (Exception e) {
-			//Exception(String.format("[LootProvider] Bad Version %s.", name), e);
-		}
 
-		if (phatLoots == null)
-			return null;
-
-		//CityWorld.(String.format("[LootProvider] Found %s.", name));
+			PluginManager pm = Bukkit.getServer().getPluginManager();
+			if (pm != null) {
+				Plugin plugin = pm.getPlugin(name);
+				if (plugin != null)
+					phatLoots = (PhatLoots) plugin;
+			}
+	
+			if (phatLoots == null) {
+				generator.reportMessage("[PasteProvider] Problem loading PhatLoots, could not find it");
+				return null;
+			}
+	
+			//CityWorld.(String.format("[LootProvider] Found %s.", name));
 		
-		try {
-
 			if (!pm.isPluginEnabled(phatLoots)) {
 				//CityWorld.reportMessage(String.format("[LootProvider] Enabling %s.", name));
 				pm.enablePlugin(phatLoots);
@@ -88,7 +96,7 @@ public class LootProvider_Phat extends LootProvider {
 			return new LootProvider_Phat();
 			
 		} catch (Exception e) {
-			//CityWorld.reportException(String.format("[LootProvider] Failed to enable %s.", name), e);
+			generator.reportMessage("[LootProvider] Problem loading PhatLoots (" + e.getMessage() + ")");
 			return null;
 		}
 	}

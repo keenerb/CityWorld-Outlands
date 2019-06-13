@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import me.daddychurchill.CityWorld.CityWorldSettings;
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Clipboard.Clipboard;
 import me.daddychurchill.CityWorld.Clipboard.ClipboardList;
 import me.daddychurchill.CityWorld.Clipboard.PasteProvider;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -18,15 +19,15 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 public class PasteProvider_WorldEdit extends PasteProvider {
 
 	private static String pluginName = "WorldEdit";
-	private static String pluginMinVersion = "5.4.5";
+	private static String pluginMinVersion = "5.6";
 	private File schematicsFolder;
 	
 	@Override
-	public void reportStatus(WorldGenerator generator) {
+	public void reportStatus(CityWorldGenerator generator) {
 		generator.reportMessage("[WorldEdit] Loaded " + schematicsLoaded + " schematic(s) for world " + generator.worldName);
 	}
 	
-	public PasteProvider_WorldEdit(WorldGenerator generator) throws Exception {
+	public PasteProvider_WorldEdit(CityWorldGenerator generator) throws Exception {
 		super();
 		
 		// find the files
@@ -66,7 +67,7 @@ public class PasteProvider_WorldEdit extends PasteProvider {
 	}
 
 	@Override
-	public void loadClips(WorldGenerator generator, SchematicFamily family, ClipboardList clips, int maxX, int maxZ) throws Exception {
+	public void loadClips(CityWorldGenerator generator, SchematicFamily family, ClipboardList clips, int maxX, int maxZ) throws Exception {
 		
 		// things aren't happy
 		if (schematicsFolder != null) {
@@ -76,47 +77,54 @@ public class PasteProvider_WorldEdit extends PasteProvider {
 			
 			// now load those schematic files
 			File[] schematicFiles = contextFolder.listFiles(matchSchematics());
-			for (File schematicFile: schematicFiles) {
-				try {
-					
-					// load a clipboard
-					Clipboard clip = new Clipboard_WorldEdit(generator, schematicFile);
-					
-					// too big?
-					if (clip.chunkX > maxX || clip.chunkZ > maxZ) {
-						generator.reportMessage("[WorldEdit] Schematic " + schematicFile.getName() + 
-								" too large, max size = " + 
-								maxX * SupportChunk.chunksBlockWidth + " by " + 
-								maxZ * SupportChunk.chunksBlockWidth + " it is = " + 
-								clip.sizeX + " by " + clip.sizeZ + ", skipped");
+			if (schematicFiles != null) {
+				for (File schematicFile: schematicFiles) {
+					try {
 						
-					} else {
-					
-						// add the clip to the result
-						clips.put(clip);
+						// load a clipboard
+						Clipboard clip = new Clipboard_WorldEdit(generator, schematicFile);
+						
+						// too big?
+						if (clip.chunkX > maxX || clip.chunkZ > maxZ) {
+							generator.reportMessage("[WorldEdit] Schematic " + schematicFile.getName() + 
+									" too large, max size = " + 
+									maxX * SupportBlocks.sectionBlockWidth + " by " + 
+									maxZ * SupportBlocks.sectionBlockWidth + " it is = " + 
+									clip.sizeX + " by " + clip.sizeZ + ", skipped");
+							
+						} else {
+						
+							// add the clip to the result
+							clips.put(clip);
+						}
+						
+//						generator.reportMessage("[WorldEdit] Schematic " + schematicFile.getName() + " loaded");
+					} catch (Exception e) {
+						generator.reportException("[WorldEdit] Schematic " + schematicFile.getName() + " could NOT be loaded", e);
 					}
-					
-//					generator.reportMessage("[WorldEdit] Schematic " + schematicFile.getName() + " loaded");
-				} catch (Exception e) {
-					generator.reportException("[WorldEdit] Schematic " + schematicFile.getName() + " could NOT be loaded", e);
 				}
 			}
 		}
 	}
 	
 	// VERY Loosely based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
-	public static PasteProvider loadWorldEdit(WorldGenerator generator) {
+	public static PasteProvider loadWorldEdit(CityWorldGenerator generator) {
 //		return null;
 		WorldEditPlugin worldEditPlugin = null;
 
 		try {
 			PluginManager pm = Bukkit.getServer().getPluginManager();
-			worldEditPlugin = (WorldEditPlugin) pm.getPlugin(pluginName);
+			if (pm != null) {
+				Plugin plugin = pm.getPlugin(pluginName);
+				if (plugin != null)
+					worldEditPlugin = (WorldEditPlugin)plugin;
+			}
 			
-			// not there? darn
-			if (worldEditPlugin == null)
+			if (worldEditPlugin == null) {
+				generator.reportMessage("[PasteProvider] Problem loading WorldEdit, could not find it");
 				return null;
-
+			}
+						
 			// got the right version?
 			if (!isPlugInVersionOrBetter(generator, worldEditPlugin, pluginMinVersion))
 				
@@ -136,12 +144,11 @@ public class PasteProvider_WorldEdit extends PasteProvider {
 				pm.enablePlugin(worldEditPlugin);
 
 			// woot!
-			generator.reportMessage("[PasteProvider] Found WorldEdit, enabling its schematics");
+			generator.reportMessage("[PasteProvider] Found WorldEdit v" + worldEditPlugin.getDescription().getVersion() + ", enabling its schematics");
 			
 			return new PasteProvider_WorldEdit(generator);
-			
 		} catch (Exception e) {
-			generator.reportException("[PasteProvider] Problem with WorldEdit", e);
+			generator.reportMessage("[PasteProvider] Problem loading WorldEdit (" + e.getMessage() + ")");
 			return null;
 		}
 	}

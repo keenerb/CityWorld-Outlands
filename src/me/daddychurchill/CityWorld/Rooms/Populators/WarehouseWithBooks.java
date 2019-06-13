@@ -12,7 +12,7 @@ public class WarehouseWithBooks extends RoomProvider {
 		super();
 
 		roomTypes.add(new StorageSingleRowRoom(Material.BOOKSHELF));
-		roomTypes.add(new StorageDoubleRowRoom(Material.WOOD));
+		roomTypes.add(new StorageDoubleRowRoom(Material.BOOKSHELF));
 	}
 
 }

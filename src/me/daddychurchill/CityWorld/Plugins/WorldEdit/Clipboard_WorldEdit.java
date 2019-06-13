@@ -3,13 +3,13 @@ package me.daddychurchill.CityWorld.Plugins.WorldEdit;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Clipboard.Clipboard;
-import me.daddychurchill.CityWorld.Support.Direction;
-import me.daddychurchill.CityWorld.Support.RealChunk;
+import me.daddychurchill.CityWorld.Support.RealBlocks;
+import me.daddychurchill.CityWorld.Support.BlackMagic;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.CuboidClipboard.FlipDirection;
@@ -20,6 +20,7 @@ import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
+@SuppressWarnings("deprecation")
 public class Clipboard_WorldEdit extends Clipboard {
 
 	private BaseBlock[][][][] blocks;
@@ -43,12 +44,12 @@ public class Clipboard_WorldEdit extends Clipboard {
 	private final static String tagBroadcastLocation = "BroadcastLocation";
 	private final static String tagDecayable = "Decayable";
 	
-	public Clipboard_WorldEdit(WorldGenerator generator, File file) throws Exception {
+	public Clipboard_WorldEdit(CityWorldGenerator generator, File file) throws Exception {
 		super(generator, file);
 	}
 	
 	@Override
-	protected void load(WorldGenerator generator, File file) throws Exception {
+	protected void load(CityWorldGenerator generator, File file) throws Exception {
 		
 		// prepare to read the meta data
 		YamlConfiguration metaYaml = new YamlConfiguration();
@@ -102,12 +103,20 @@ public class Clipboard_WorldEdit extends Clipboard {
 			generator.reportException("[WorldEdit] Could not resave " + metaFile.getAbsolutePath(), e);
 		}
 		
+		//TODO I need to fix this code over in ClipboardLot when I figure out how to use the new WorldEdit schematic code
+		/* 
+		chunk.setBlocks(0, edgeX1, edgeY2, 0, 16, clip.edgeMaterial);//, clip.edgeData);
+		chunk.setBlocks(edgeX2, 16, edgeY2, 0, 16, clip.edgeMaterial);//, clip.edgeData);
+		chunk.setBlocks(edgeX1, edgeX2, edgeY2, 0, edgeZ1, clip.edgeMaterial);//, clip.edgeData);
+		chunk.setBlocks(edgeX1, edgeX2, edgeY2, edgeZ2, 16, clip.edgeMaterial);//, clip.edgeData);
+		 */
+		
+		//TODO I need to change the edgeMaterial and edgeData types to be Material and MaterialData or something like that
 		// grab the edge block
-		BaseBlock edge = cuboid.getPoint(new Vector(0, groundLevelY, 0));
-		edgeType = Material.getMaterial(edge.getType());
-		edgeData = (byte) edge.getData(); //TODO I think that data can be integers... one of these days
-		//edgeData = (byte)((edge.getData() & 0x000000ff)); // this would make overflows not error out but let's not do that
-		edgeRise = generator.oreProvider.surfaceId == edgeType.getId() ? 0 : 1;
+		BaseBlock edge = cuboid.getBlock(new Vector(0, groundLevelY, 0));
+		edgeMaterial = BlackMagic.getMaterial(edge.getType());
+//		edgeData = edge.getData(); // TODO: One of these days I need to get this working again
+		edgeRise = generator.oreProvider.surfaceMaterial.equals(edgeMaterial) ? 0 : 1;
 		
 		// allocate the blocks
 		facingCount = 1;
@@ -145,14 +154,14 @@ public class Clipboard_WorldEdit extends Clipboard {
 	    for (int x = 0; x < sizeX; x++)
 	        for (int y = 0; y < sizeY; y++)
 	          for (int z = 0; z < sizeZ; z++)
-	        	  blocks[facing][x][y][z] = cuboid.getPoint(new Vector(x, y, z));
+	        	  blocks[facing][x][y][z] = cuboid.getBlock(new Vector(x, y, z));
 	}
 	
-	private EditSession getEditSession(WorldGenerator generator) {
+	private EditSession getEditSession(CityWorldGenerator generator) {
 		return new EditSession(new BukkitWorld(generator.getWorld()), blockCount);
 	}
 	
-	private int getFacingIndex(Direction.Facing facing) {
+	private int getFacingIndex(BlockFace facing) {
 		int result = 0;
 		switch (facing) {
 		case SOUTH:
@@ -165,14 +174,14 @@ public class Clipboard_WorldEdit extends Clipboard {
 			result = 2;
 			break;
 		default: // case EAST:
-			result = 2;
+			result = 3; //TODO: This was 2 for some reason... shouldn't it have been 3????
 			break;
 		}
 		return Math.min(facingCount - 1, result);
 	}
 	
 	@Override
-	public void paste(WorldGenerator generator, RealChunk chunk, Direction.Facing facing, int blockX, int blockY, int blockZ) {
+	public void paste(CityWorldGenerator generator, RealBlocks chunk, BlockFace facing, int blockX, int blockY, int blockZ) {
 		Vector at = new Vector(blockX, blockY, blockZ);
 		try {
 			EditSession editSession = getEditSession(generator);
@@ -216,7 +225,7 @@ public class Clipboard_WorldEdit extends Clipboard {
 
 	//TODO remove the editSession need by directly setting the blocks in the chunk
 	@Override
-	public void paste(WorldGenerator generator, RealChunk chunk, Direction.Facing facing, 
+	public void paste(CityWorldGenerator generator, RealBlocks chunk, BlockFace facing, 
 			int blockX, int blockY, int blockZ,
 			int x1, int x2, int y1, int y2, int z1, int z2) {
 		Vector at = new Vector(blockX, blockY, blockZ);

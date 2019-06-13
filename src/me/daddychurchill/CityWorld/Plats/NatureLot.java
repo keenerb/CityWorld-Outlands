@@ -1,11 +1,12 @@
 package me.daddychurchill.CityWorld.Plats;
 
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
-import me.daddychurchill.CityWorld.WorldGenerator;
+
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.RealChunk;
+import me.daddychurchill.CityWorld.Support.RealBlocks;
 
 public class NatureLot extends IsolatedLot {
 
@@ -21,24 +22,50 @@ public class NatureLot extends IsolatedLot {
 	}
 
 	@Override
-	public int getBottomY(WorldGenerator generator) {
+	public int getBottomY(CityWorldGenerator generator) {
 		return 0;
 	}
 	
 	@Override
-	public int getTopY(WorldGenerator generator) {
-		return generator.seaLevel + generator.landRange;
+	public int getTopY(CityWorldGenerator generator) {
+		return generator.seaLevel;// + generator.landRange;
 	}
 	
 	@Override
-	protected void generateActualChunk(WorldGenerator generator, PlatMap platmap, ByteChunk chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
+	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void generateActualBlocks(WorldGenerator generator, PlatMap platmap, RealChunk chunk, DataContext context, int platX, int platZ) {
+	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
 		generateSurface(generator, chunk, true);
+		generateEntities(generator, chunk);
+	}
+	
+	private final static int magicSeaSpawnY = 62;
+	
+	protected void generateEntities(CityWorldGenerator generator, RealBlocks chunk) {
+		int x = chunkOdds.getRandomInt(1, 14);
+		int z = chunkOdds.getRandomInt(1, 14);
+		int y = getBlockY(x, z);
+			
+		// in the water?
+		if (y < magicSeaSpawnY) {
+			generator.spawnProvider.spawnSeaAnimals(generator, chunk, chunkOdds, x, magicSeaSpawnY, z);
+//			chunk.setBlock(x, 100, z, Material.LAPIS_BLOCK);
+		} else {
+//			int origY = getBlockY(x, z);
+//			int topY = getTopY(generator);
+//			int y = chunk.findFirstEmptyAbove(x, origY, z, topY);
+//			chunk.setSignPost(x, 101, z, BlockFace.NORTH, "Y = " + y, "origY = " + origY, "TopY = " + topY);
+			if (!chunk.isWater(x, y - 1, z)) {
+				generator.spawnProvider.spawnVagrants(generator, chunk, chunkOdds, x, y, z);
+//				chunk.setBlock(x, 100, z, Material.IRON_BLOCK);
+//			} else {
+//				chunk.setBlock(x, 100, z, Material.DIAMOND_BLOCK);
+			}
+		}
 	}
 
 }

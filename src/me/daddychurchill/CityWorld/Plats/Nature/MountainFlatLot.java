@@ -1,15 +1,16 @@
 package me.daddychurchill.CityWorld.Plats.Nature;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.ConstructLot;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.PlatMap;
+
 import org.bukkit.Material;
 
 public abstract class MountainFlatLot extends ConstructLot {
 
-	private final static byte retainingWallId = (byte) Material.SMOOTH_BRICK.getId();
+	private final static Material retainingWallMaterial = Material.SMOOTH_BRICK;
 	
 	public MountainFlatLot(PlatMap platmap, int chunkX, int chunkZ) {
 		super(platmap, chunkX, chunkZ);
@@ -18,7 +19,7 @@ public abstract class MountainFlatLot extends ConstructLot {
 		trulyIsolated = true;
 	}
 
-	protected void generateRetainerLot(WorldGenerator generator, ByteChunk chunk, DataContext context) {
+	protected void generateRetainerLot(CityWorldGenerator generator, InitialBlocks chunk, DataContext context) {
 		
 		// flatten things out a bit
 		for (int x = 0; x < chunk.width; x++) {
@@ -27,21 +28,21 @@ public abstract class MountainFlatLot extends ConstructLot {
 				
 				// add the retaining walls
 				if (x == 0 || x == chunk.width - 1 || z == 0 || z == chunk.width - 1) {
-					if (y <= averageHeight) {
-						chunk.setBlocks(x, y - 2, averageHeight + 1, z, retainingWallId);
-					} else if (y > averageHeight) {
-						chunk.setBlocks(x, averageHeight - 2, y + 1, z, retainingWallId);
+					if (y <= blockYs.averageHeight) {
+						chunk.setBlocks(x, y - 2, blockYs.averageHeight + 1, z, retainingWallMaterial);
+					} else if (y > blockYs.averageHeight) {
+						chunk.setBlocks(x, blockYs.averageHeight - 2, y + 1, z, retainingWallMaterial);
 					}
 				
 				// backfill
 				} else {
 					if (generator.settings.includeDecayedNature) {
-						chunk.setBlocks(x, y - 2, averageHeight + 1, z, sandId);
+						chunk.setBlocks(x, y - 2, blockYs.averageHeight + 1, z, Material.SAND);
 					} else {
-						chunk.setBlocks(x, y - 2, averageHeight, z, generator.oreProvider.subsurfaceId);
-						chunk.setBlock(x, averageHeight, z, generator.oreProvider.surfaceId); 
+						chunk.setBlocks(x, y - 2, blockYs.averageHeight, z, generator.oreProvider.subsurfaceMaterial);
+						chunk.setBlock(x, blockYs.averageHeight, z, generator.oreProvider.surfaceMaterial); 
 					}
-					chunk.setBlocks(x, averageHeight + 1, maxHeight + 1, z, getAirId(generator, averageHeight + 1));
+					chunk.airoutBlocks(generator, x, blockYs.averageHeight + 1, blockYs.maxHeight + 1, z, true);
 				}
 			}
 		}
@@ -49,7 +50,7 @@ public abstract class MountainFlatLot extends ConstructLot {
 	
 	private final static int bevelInset = 2;
 
-	protected void generateSmoothedLot(WorldGenerator generator, ByteChunk chunk, DataContext context) {
+	protected void generateSmoothedLot(CityWorldGenerator generator, InitialBlocks chunk, DataContext context) {
 		
 		// blend the edges
 		for (int i = 0; i < bevelInset; i++)
@@ -61,17 +62,17 @@ public abstract class MountainFlatLot extends ConstructLot {
 				int y = getBlockY(x, z);
 				
 				if (generator.settings.includeDecayedNature) {
-					chunk.setBlocks(x, y - 2, averageHeight + 1, z, sandId);
+					chunk.setBlocks(x, y - 2, blockYs.averageHeight + 1, z, Material.SAND);
 				} else {
-					chunk.setBlocks(x, y - 2, averageHeight, z, generator.oreProvider.subsurfaceId);
-					chunk.setBlock(x, averageHeight, z, generator.oreProvider.surfaceId); 
+					chunk.setBlocks(x, y - 2, blockYs.averageHeight, z, generator.oreProvider.subsurfaceMaterial);
+					chunk.setBlock(x, blockYs.averageHeight, z, generator.oreProvider.surfaceMaterial); 
 				}
-				chunk.setBlocks(x, averageHeight + 1, maxHeight + 1, z, getAirId(generator, averageHeight + 1));
+				chunk.airoutBlocks(generator, x, blockYs.averageHeight + 1, blockYs.maxHeight + 1, z, true);
 			}
 		}
 	}
 
-	private void generateSmoothedLotBevel(WorldGenerator generator, ByteChunk chunk, DataContext context, int inset) {
+	private void generateSmoothedLotBevel(CityWorldGenerator generator, InitialBlocks chunk, DataContext context, int inset) {
 
 		// Xwise
 		for (int x = inset; x < chunk.width - inset; x++) {
@@ -86,30 +87,30 @@ public abstract class MountainFlatLot extends ConstructLot {
 		}
 	}
 	
-	private void generateBevelBlock(WorldGenerator generator, ByteChunk chunk, DataContext context, int inset, int x, int z) {
+	private void generateBevelBlock(CityWorldGenerator generator, InitialBlocks chunk, DataContext context, int inset, int x, int z) {
 		int y = getBlockY(x, z);
 		int y1 = y;
-		if (y < averageHeight) {
+		if (y < blockYs.averageHeight) {
 			// build up
-			y1 = (averageHeight - y) / 2 + y;
-			chunk.setBlocks(x, y - 1, y1, z, generator.oreProvider.subsurfaceId);
-			chunk.setBlock(x, y1, z, generator.oreProvider.surfaceId);
-		} else if (y > averageHeight) {
+			y1 = (blockYs.averageHeight - y) / 2 + y;
+			chunk.setBlocks(x, y - 1, y1, z, generator.oreProvider.subsurfaceMaterial);
+			chunk.setBlock(x, y1, z, generator.oreProvider.surfaceMaterial);
+		} else if (y > blockYs.averageHeight) {
 			// trim down
-			y1 = (y - averageHeight) / 2 + averageHeight;
-			chunk.setBlocks(x, averageHeight - 1, y1, z, generator.oreProvider.subsurfaceId);
-			chunk.setBlock(x, y1, z, generator.oreProvider.surfaceId);
-			chunk.setBlocks(x, y1 + 1, y + 1, z, Material.AIR);
+			y1 = (y - blockYs.averageHeight) / 2 + blockYs.averageHeight;
+			chunk.setBlocks(x, blockYs.averageHeight - 1, y1, z, generator.oreProvider.subsurfaceMaterial);
+			chunk.setBlock(x, y1, z, generator.oreProvider.surfaceMaterial);
+			chunk.airoutBlocks(generator, x, y1 + 1, y + 1, z, true);
 		}
 	}
 		
 	@Override
-	public int getBottomY(WorldGenerator generator) {
-		return averageHeight + 1;
+	public int getBottomY(CityWorldGenerator generator) {
+		return blockYs.averageHeight + 1;
 	}
 	
 	@Override
-	public int getTopY(WorldGenerator generator) {
+	public int getTopY(CityWorldGenerator generator) {
 		return generator.streetLevel + DataContext.FloorHeight * 2 + 1;
 	}
 

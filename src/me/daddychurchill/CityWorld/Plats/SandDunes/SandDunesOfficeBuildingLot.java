@@ -1,13 +1,13 @@
 package me.daddychurchill.CityWorld.Plats.SandDunes;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plats.Urban.OfficeBuildingLot;
 import me.daddychurchill.CityWorld.Plugins.RoomProvider;
 import me.daddychurchill.CityWorld.Rooms.Populators.EmptyWithNothing;
 import me.daddychurchill.CityWorld.Rooms.Populators.EmptyWithRooms;
 import me.daddychurchill.CityWorld.Support.PlatMap;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
+import me.daddychurchill.CityWorld.Support.SupportBlocks;
 
 public class SandDunesOfficeBuildingLot extends OfficeBuildingLot {
 
@@ -24,7 +24,7 @@ public class SandDunesOfficeBuildingLot extends OfficeBuildingLot {
 	}
 
 	@Override
-	public RoomProvider roomProviderForFloor(WorldGenerator generator, SupportChunk chunk, int floor, int floorY) {
+	public RoomProvider roomProviderForFloor(CityWorldGenerator generator, SupportBlocks chunk, int floor, int floorY) {
 		if (generator.shapeProvider.findFloodY(generator, chunk.getOriginX(), chunk.getOriginZ()) < floorY)
 			return super.roomProviderForFloor(generator, chunk, floor, floorY);
 		else {

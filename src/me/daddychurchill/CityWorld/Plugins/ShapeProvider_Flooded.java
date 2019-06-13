@@ -3,7 +3,7 @@ package me.daddychurchill.CityWorld.Plugins;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 
-import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.Flooded.FloodedConstructionContext;
 import me.daddychurchill.CityWorld.Context.Flooded.FloodedFarmContext;
 import me.daddychurchill.CityWorld.Context.Flooded.FloodedHighriseContext;
@@ -14,24 +14,23 @@ import me.daddychurchill.CityWorld.Context.Flooded.FloodedNeighborhoodContext;
 import me.daddychurchill.CityWorld.Context.Flooded.FloodedParkContext;
 import me.daddychurchill.CityWorld.Context.Flooded.FloodedRoadContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
+import me.daddychurchill.CityWorld.Support.InitialBlocks;
 import me.daddychurchill.CityWorld.Support.Odds;
 
 public class ShapeProvider_Flooded extends ShapeProvider_Normal {
 
-	public final static Material floodMat = Material.STATIONARY_WATER;
-	public final static byte floodId = (byte) floodMat.getId();
+	public final static Material floodMaterial = Material.STATIONARY_WATER;
 	
 	protected int floodY;
 	
-	public ShapeProvider_Flooded(WorldGenerator generator, Odds odds) {
+	public ShapeProvider_Flooded(CityWorldGenerator generator, Odds odds) {
 		super(generator, odds);
 		
 		floodY = seaLevel + 20;
 	}
 
 	@Override
-	public void allocateContexts(WorldGenerator generator) {
+	public void allocateContexts(CityWorldGenerator generator) {
 		if (!contextInitialized) {
 			natureContext = new FloodedNatureContext(generator);
 			roadContext = new FloodedRoadContext(generator);
@@ -45,7 +44,7 @@ public class ShapeProvider_Flooded extends ShapeProvider_Normal {
 			industrialContext = lowriseContext;
 			neighborhoodContext = new FloodedNeighborhoodContext(generator);
 			farmContext = new FloodedFarmContext(generator);
-			
+			outlandContext = farmContext;
 			
 			contextInitialized = true;
 		}
@@ -57,58 +56,65 @@ public class ShapeProvider_Flooded extends ShapeProvider_Normal {
 	}
 	
 	@Override
-	public int findFloodY(WorldGenerator generator, int blockX, int blockZ) {
+	public int findFloodY(CityWorldGenerator generator, int blockX, int blockZ) {
 		return floodY;
 	}
 
 	@Override
-	public int findHighestFloodY(WorldGenerator generator) {
+	public int findHighestFloodY(CityWorldGenerator generator) {
 		return floodY;
 	}
 
 	@Override
-	public int findLowestFloodY(WorldGenerator generator) {
+	public int findLowestFloodY(CityWorldGenerator generator) {
 		return floodY;
 	}
 
 	@Override
-	protected Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome) {
+	public Material findAtmosphereMaterialAt(CityWorldGenerator generator, int blockY) {
+		if (blockY < floodY)
+			return floodMaterial;
+		else
+			return super.findAtmosphereMaterialAt(generator, blockY);
+	}
+	
+	@Override
+	protected Biome remapBiome(CityWorldGenerator generator, PlatLot lot, Biome biome) {
 		return Biome.OCEAN;
 	}
 
 	@Override
-	protected void generateStratas(WorldGenerator generator, PlatLot lot,
-			ByteChunk chunk, int x, int z, byte substratumId, byte stratumId,
-			int stratumY, byte subsurfaceId, int subsurfaceY, byte surfaceId,
-			int coverY, byte coverId, boolean surfaceCaves) {
+	protected void generateStratas(CityWorldGenerator generator, PlatLot lot,
+			InitialBlocks chunk, int x, int z, Material substratumMaterial, Material stratumMaterial,
+			int stratumY, Material subsurfaceMaterial, int subsurfaceY, Material surfaceMaterial,
+			int coverY, Material coverMaterial, boolean surfaceCaves) {
 
 		// do the default bit
-		actualGenerateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, 
-				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
+		actualGenerateStratas(generator, lot, chunk, x, z, substratumMaterial, stratumMaterial, stratumY, 
+				subsurfaceMaterial, subsurfaceY, surfaceMaterial, surfaceCaves);
 		
 		// cover it up a bit
 		actualGenerateFlood(generator, lot, chunk, x, z, subsurfaceY + 1);
 	}
 	
 	@Override
-	protected void generateStratas(WorldGenerator generator, PlatLot lot,
-			ByteChunk chunk, int x, int z, byte substratumId, byte stratumId,
-			int stratumY, byte subsurfaceId, int subsurfaceY, byte surfaceId,
+	protected void generateStratas(CityWorldGenerator generator, PlatLot lot,
+			InitialBlocks chunk, int x, int z, Material substratumMaterial, Material stratumMaterial,
+			int stratumY, Material subsurfaceMaterial, int subsurfaceY, Material surfaceMaterial,
 			boolean surfaceCaves) {
 
 		// do the default bit
-		actualGenerateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, 
-				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
+		actualGenerateStratas(generator, lot, chunk, x, z, substratumMaterial, stratumMaterial, stratumY, 
+				subsurfaceMaterial, subsurfaceY, surfaceMaterial, surfaceCaves);
 		
 		// cover it up a bit
 		actualGenerateFlood(generator, lot, chunk, x, z, subsurfaceY + 1);
 	}
 
-	protected void actualGenerateFlood(WorldGenerator generator, PlatLot lot, ByteChunk chunk, int x, int z, int subsurfaceY) {
+	protected void actualGenerateFlood(CityWorldGenerator generator, PlatLot lot, InitialBlocks chunk, int x, int z, int subsurfaceY) {
 		int y = findFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
 		if (y > subsurfaceY) {
-//			chunk.setBlocks(x, subsurfaceY, y - 2, z, subFloodId);
-			chunk.setBlocks(x, subsurfaceY, y, z, floodId);
+			chunk.setBlocks(x, subsurfaceY, y, z, floodMaterial);
 		}
 	}
 }
