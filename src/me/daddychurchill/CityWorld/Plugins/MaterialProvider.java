@@ -424,9 +424,7 @@ public class MaterialProvider {
 			Material.PURPUR_BLOCK,
 			Material.PURPUR_PILLAR,
 			Material.END_BRICKS,
-			Material.DOUBLE_STONE_SLAB2,
-			Material.CONCRETE_POWDER,
-			Material.CONCRETE);
+			Material.DOUBLE_STONE_SLAB2);
 
 	public final static String tagSelectMaterial_BuildingFoundation = "Materials_For_BuildingFoundation";
 	public MaterialList itemsSelectMaterial_BuildingFoundation = createList(tagSelectMaterial_BuildingFoundation,
@@ -453,8 +451,7 @@ public class MaterialProvider {
 			Material.PURPUR_BLOCK,
 			Material.PURPUR_PILLAR,
 			Material.END_BRICKS,
-			Material.DOUBLE_STONE_SLAB2,
-			Material.CONCRETE);
+			Material.DOUBLE_STONE_SLAB2);
 
 	public final static String tagSelectMaterial_BuildingCeilings = "Materials_For_BuildingCeilings";
 	public MaterialList itemsSelectMaterial_BuildingCeilings = createList(tagSelectMaterial_BuildingCeilings,
@@ -481,8 +478,7 @@ public class MaterialProvider {
 			Material.PURPUR_BLOCK,
 			Material.PURPUR_PILLAR,
 			Material.END_BRICKS,
-			Material.DOUBLE_STONE_SLAB2,
-			Material.CONCRETE);
+			Material.DOUBLE_STONE_SLAB2);
 
 	public final static String tagSelectMaterial_BuildingRoofs = "Materials_For_BuildingRoofs";
 	public MaterialList itemsSelectMaterial_BuildingRoofs = createList(tagSelectMaterial_BuildingRoofs,
@@ -509,16 +505,14 @@ public class MaterialProvider {
 			Material.PURPUR_BLOCK,
 			Material.PURPUR_PILLAR,
 			Material.END_BRICKS,
-			Material.DOUBLE_STONE_SLAB2,
-			Material.CONCRETE);
+			Material.DOUBLE_STONE_SLAB2);
 
 	public final static String tagSelectMaterial_UnfinishedBuildings = "Materials_For_UnfinishedBuildings";
 	public MaterialList itemsSelectMaterial_UnfinishedBuildings = createList(tagSelectMaterial_UnfinishedBuildings,
 			Material.CLAY,
 			Material.HARD_CLAY,
 			Material.STAINED_CLAY,
-			Material.STONE,
-			Material.CONCRETE);
+			Material.STONE);
 
 	public final static String tagSelectMaterial_GovernmentWalls = "Materials_For_GovernmentWalls";
 	public MaterialList itemsSelectMaterial_GovernmentWalls = createList(tagSelectMaterial_GovernmentWalls,
@@ -549,8 +543,7 @@ public class MaterialProvider {
 			Material.PRISMARINE,
 			Material.PURPUR_BLOCK,
 			Material.END_BRICKS,
-			Material.WOOD,
-			Material.CONCRETE);
+			Material.WOOD);
 	
 	public final static String tagSelectMaterial_HouseFloors = "Materials_For_HouseFloors";
 	public MaterialList itemsSelectMaterial_HouseFloors = createList(tagSelectMaterial_HouseFloors,
@@ -565,23 +558,7 @@ public class MaterialProvider {
 			Material.WOOL,
 			Material.WOOD,
 			Material.WOOD,
-			Material.WOOD,
-			Material.BLACK_GLAZED_TERRACOTTA,
-			Material.BLUE_GLAZED_TERRACOTTA,
-			Material.BROWN_GLAZED_TERRACOTTA,
-			Material.CYAN_GLAZED_TERRACOTTA,
-			Material.GRAY_GLAZED_TERRACOTTA,
-			Material.GREEN_GLAZED_TERRACOTTA,
-			Material.LIGHT_BLUE_GLAZED_TERRACOTTA,
-			Material.LIME_GLAZED_TERRACOTTA,
-			Material.MAGENTA_GLAZED_TERRACOTTA,
-			Material.ORANGE_GLAZED_TERRACOTTA,
-			Material.PINK_GLAZED_TERRACOTTA,
-			Material.PURPLE_GLAZED_TERRACOTTA,
-			Material.RED_GLAZED_TERRACOTTA,
-			Material.SILVER_GLAZED_TERRACOTTA,
-			Material.WHITE_GLAZED_TERRACOTTA,
-			Material.YELLOW_GLAZED_TERRACOTTA);
+			Material.WOOD);
 	
 	public final static String tagSelectMaterial_HouseCeilings = "Materials_For_HouseCeilings";
 	public MaterialList itemsSelectMaterial_HouseCeilings = createList(tagSelectMaterial_HouseCeilings,
@@ -641,9 +618,6 @@ public class MaterialProvider {
 			Material.GRAVEL,
 			Material.GRAVEL,
 			Material.GRAVEL,
-			Material.CONCRETE_POWDER,
-			Material.CONCRETE_POWDER,
-			Material.CONCRETE_POWDER,
 			Material.COAL_ORE,
 			Material.COAL_ORE,
 			Material.COAL_ORE,
@@ -651,8 +625,6 @@ public class MaterialProvider {
 			Material.IRON_ORE,
 			Material.IRON_ORE,
 			Material.IRON_ORE,
-			Material.CONCRETE,
-			Material.CONCRETE,
 			Material.GOLD_ORE,
 			Material.LAPIS_ORE,
 			Material.REDSTONE_ORE,
@@ -673,8 +645,7 @@ public class MaterialProvider {
 	public MaterialList itemsSelectMaterial_WaterTowers = createList(tagSelectMaterial_WaterTowers,
 			Material.CLAY,
 			Material.STAINED_CLAY,
-			Material.STAINED_CLAY,
-			Material.CONCRETE);
+			Material.STAINED_CLAY);
 
 	public final static String tagSelectMaterial_FactoryInsides = "Materials_For_FactoryInsides";
 	public MaterialList itemsSelectMaterial_FactoryInsides = createList(tagSelectMaterial_FactoryInsides,
@@ -685,8 +656,7 @@ public class MaterialProvider {
 			Material.QUARTZ_BLOCK,
 			Material.CLAY,
 			Material.STAINED_CLAY,
-			Material.STONE,
-			Material.CONCRETE);
+			Material.STONE);
 	
 	public final static String tagSelectMaterial_FactoryTanks = "Materials_For_FactoryTanks";
 	public MaterialList itemsSelectMaterial_FactoryTanks = createList(tagSelectMaterial_FactoryTanks,
@@ -700,20 +670,17 @@ public class MaterialProvider {
 			Material.GLASS,
 			Material.STAINED_CLAY,
 			Material.STAINED_GLASS,
-			Material.STATIONARY_WATER,
-			Material.CONCRETE_POWDER);
+			Material.STATIONARY_WATER);
 
 	public final static String tagSelectMaterial_BunkerBuildings = "Materials_For_BunkerBuildings";
 	public MaterialList itemsSelectMaterial_BunkerBuildings = createList(tagSelectMaterial_BunkerBuildings,
 			Material.CLAY,
-			Material.STAINED_CLAY,
-			Material.CONCRETE);
+			Material.STAINED_CLAY);
 
 	public final static String tagSelectMaterial_BunkerPlatforms = "Materials_For_BunkerPlatforms";
 	public MaterialList itemsSelectMaterial_BunkerPlatforms = createList(tagSelectMaterial_BunkerPlatforms,
 			Material.CLAY,
-			Material.QUARTZ_BLOCK,
-			Material.CONCRETE);
+			Material.QUARTZ_BLOCK);
 
 	public final static String tagSelectMaterial_BunkerBilge = "Materials_For_BunkerBilge";
 	public MaterialList itemsSelectMaterial_BunkerBilge = createList(tagSelectMaterial_BunkerBilge,
@@ -734,9 +701,7 @@ public class MaterialProvider {
 			Material.HARD_CLAY,
 			Material.ENDER_STONE,
 			Material.EMERALD_BLOCK,
-			Material.STATIONARY_WATER,
-			Material.CONCRETE_POWDER,
-			Material.CONCRETE);
+			Material.STATIONARY_WATER);
 
 	public final static String tagSelectMaterial_AstralTowerLight = "Materials_For_AstralTowerLight";
 	public MaterialList itemsSelectMaterial_AstralTowerLight = createList(tagSelectMaterial_AstralTowerLight,

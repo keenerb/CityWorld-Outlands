@@ -455,8 +455,6 @@ public abstract class SupportBlocks extends AbstractBlocks {
 		case STAINED_GLASS_PANE:
 		case WOOL:
 		case CARPET:
-		case CONCRETE:
-		case CONCRETE_POWDER:
 			return true;
 		}
 	}

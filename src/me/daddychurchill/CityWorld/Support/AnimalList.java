@@ -52,7 +52,6 @@ public class AnimalList extends EntityList {
 		case GIANT:
 		case GUARDIAN:
 		case HUSK:
-		case ILLUSIONER:
 		case MAGMA_CUBE:
 		case SHULKER:
 		case SILVERFISH:
@@ -91,7 +90,6 @@ public class AnimalList extends EntityList {
 		case HORSE:
 		case MULE:
 		case MUSHROOM_COW:
-		case PARROT:
 		case PIG:
 		case SHEEP:
 		case VILLAGER:
