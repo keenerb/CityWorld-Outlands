@@ -21,6 +21,7 @@ public class UnfinishedBuildingLot extends BuildingLot {
 	private Material girderMaterial;// = Material.CLAY;
 	
 	private final static Material dirtMaterial = Material.DIRT;
+	private final static Material decayedDirtMaterial = Material.SAND;
 	private final static Material stairMaterial = Material.WOOD_STAIRS;
 	private final static Material stairPlatformMaterial = Material.WOOD;
 	private final static Material wallMaterial = Material.SMOOTH_BRICK;
@@ -106,10 +107,17 @@ public class UnfinishedBuildingLot extends BuildingLot {
 				drawFence(generator, chunk, context, 0, generator.streetLevel + 1, floor, neighborBasements, Material.IRON_FENCE, 3);
 			
 			// one floor please
-			drawWallParts(generator, chunk, context, floorAt, FloorHeight, 0, 0, floor,
-					false, false, false, dirtMaterial, neighborBasements);
-			drawWallParts(generator, chunk, context, floorAt, FloorHeight, 1, 1, floor,
-					false, false, false, wallMaterial, neighborBasements);
+			if (generator.settings.includeDecayedBuildings) {
+				drawWallParts(generator, chunk, context, floorAt, FloorHeight, 0, 0, floor,
+						false, false, false, decayedDirtMaterial, neighborBasements);
+				drawWallParts(generator, chunk, context, floorAt, FloorHeight, 1, 1, floor,
+						false, false, false, wallMaterial, neighborBasements);
+			} else {
+				drawWallParts(generator, chunk, context, floorAt, FloorHeight, 0, 0, floor,
+						false, false, false, dirtMaterial, neighborBasements);
+				drawWallParts(generator, chunk, context, floorAt, FloorHeight, 1, 1, floor,
+						false, false, false, wallMaterial, neighborBasements);
+			}
 			
 			// ceilings if needed
 			if (!unfinishedBasementOnly) {

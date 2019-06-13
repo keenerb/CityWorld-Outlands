@@ -104,15 +104,17 @@ public class FarmLot extends ConnectedLot {
 	}
 
 	protected Material waterMaterial = Material.STATIONARY_WATER;
-	protected final static Material cropNone = Material.DIRT;
+	protected final static Material cropNone = Material.SANDSTONE;
 	
 	private final static Material soilMaterial = Material.SOIL;
 	private final static Material sandMaterial = Material.SAND;
 	private final static Material mycelMaterial = Material.MYCEL;
+	private final static Material decayedDirtMaterial = Material.SANDSTONE;
 	private final static Material dirtMaterial = Material.DIRT;
 	private final static Material soulMaterial = Material.SOUL_SAND;
 	private final static Material poleMaterial = Material.FENCE;
 	private final static Material trellisMaterial = Material.WOOD;
+	private final static Material cropDecayedNone = Material.SAND;
 
 	@Override
 	public int getBottomY(CityWorldGenerator generator) {
@@ -135,6 +137,9 @@ public class FarmLot extends ConnectedLot {
 		
 		// in-between bits bits
 		Material dividerMaterial = Material.GRASS_PATH;
+		if (generator.settings.includeDecayedNature) {
+			dividerMaterial = Material.SANDSTONE;
+		}
 		if (generator.worldEnvironment == Environment.NETHER) {
 			dividerMaterial = Material.SOUL_SAND;
 		}
@@ -270,7 +275,12 @@ public class FarmLot extends ConnectedLot {
 					fallowField = true;
 				break;
 			case DEAD_BUSH:
+				if (generator.settings.includeDecayedNature) {
+					plowField(chunk, croplevel, decayedDirtMaterial, 1, fallowMaterial, 2);
+				} else
+				{
 				plowField(chunk, croplevel, dirtMaterial, 1, fallowMaterial, 2);
+				}
 				break;
 			case WHEAT:
 			case CARROT:
@@ -304,8 +314,15 @@ public class FarmLot extends ConnectedLot {
 				break;
 			}
 		
-		if (fallowField)
-			plowField(chunk, croplevel, dirtMaterial, 1, fallowMaterial, 2);
+		if (fallowField) {
+			if (generator.settings.includeDecayedNature) {
+				plowField(chunk, croplevel, decayedDirtMaterial, 1, fallowMaterial, 2);
+			} else {
+				plowField(chunk, croplevel, dirtMaterial, 1, fallowMaterial, 2);
+			}
+			
+		}
+			
 		else {
 			switch (cropType) {
 			case FALLOW:
