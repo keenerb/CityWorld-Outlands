@@ -63,7 +63,7 @@ public class ClosetRoom extends FilledRoom {
 		if (odds.flipCoin())
 			chunk.setBlock(x, y, z, shelveMaterial);
 		else
-			chunk.setBlock(x, y, z, Material.BOOKSHELF);
+			chunk.setBlock(x, y, z, Material.WOOD);
 	}
 	
 	private Material getShelveMaterial(Material wall) {

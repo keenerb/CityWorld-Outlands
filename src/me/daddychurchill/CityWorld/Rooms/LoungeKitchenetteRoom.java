@@ -26,7 +26,7 @@ public class LoungeKitchenetteRoom extends LoungeRoom {
 			chunk.setCauldron(x + 1, y, z + 1, odds);
 			chunk.setBlockTypeAndDirection(x + 1, y, z + 2, Material.PISTON_BASE, BlockFace.UP);
 			if (odds.flipCoin())
-				chunk.setBlock(x + 1, y + 1, z, Material.BREWING_STAND);
+				chunk.setBlock(x + 1, y + 1, z, Material.GLASS);
 			break;
 		case SOUTH:
 			chunk.setBlocks(x + width - 1, x + width, y, y + height, z, z + depth, materialWall);
@@ -34,7 +34,7 @@ public class LoungeKitchenetteRoom extends LoungeRoom {
 			chunk.setCauldron(x + 1, y, z + 1, odds);
 			chunk.setBlockTypeAndDirection(x + 1, y, z + 2, Material.PISTON_BASE, BlockFace.UP);
 			if (odds.flipCoin())
-				chunk.setBlock(x + 1, y + 1, z + 2, Material.BREWING_STAND);
+				chunk.setBlock(x + 1, y + 1, z + 2, Material.GLASS);
 			break;
 		case WEST:
 			chunk.setBlocks(x, x + width, y, y + height, z + depth - 1, z + depth, materialWall);
@@ -42,7 +42,7 @@ public class LoungeKitchenetteRoom extends LoungeRoom {
 			chunk.setCauldron(x + 1, y, z + 1, odds);
 			chunk.setBlockTypeAndDirection(x + 2, y, z + 1, Material.PISTON_BASE, BlockFace.UP);
 			if (odds.flipCoin())
-				chunk.setBlock(x, y + 1, z + 1, Material.BREWING_STAND);
+				chunk.setBlock(x, y + 1, z + 1, Material.GLASS);
 			break;
 		case EAST:
 			chunk.setBlocks(x, x + width, y, y + height, z, z + 1, materialWall);
@@ -50,7 +50,7 @@ public class LoungeKitchenetteRoom extends LoungeRoom {
 			chunk.setCauldron(x + 1, y, z + 1, odds);
 			chunk.setBlockTypeAndDirection(x + 2, y, z + 1, Material.PISTON_BASE, BlockFace.UP);
 			if (odds.flipCoin())
-				chunk.setBlock(x + 2, y + 1, z + 1, Material.BREWING_STAND);
+				chunk.setBlock(x + 2, y + 1, z + 1, Material.GLASS);
 			break;
 		}
 	}
