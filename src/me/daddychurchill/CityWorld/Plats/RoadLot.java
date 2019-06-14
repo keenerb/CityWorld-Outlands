@@ -955,7 +955,9 @@ public class RoadLot extends ConnectedLot {
 			}
 			
 			Material fluidMaterial = generator.oreProvider.fluidFluidMaterial;
-			
+			if (!generator.settings.includeDecayedBuildings) {
+				fluidMaterial = Material.AIR;
+			}
 			// cardinal directions known walls and ditches
 			try {
 				chunk.setDoPhysics(true);

@@ -31,6 +31,7 @@ public class ParkLot extends ConnectedLot {
 	private final static Material columnMaterial = Material.SMOOTH_BRICK;
 	private final static Material grassMaterial = Material.GRASS;
 	private final static Material pathMaterial = Material.GRASS_PATH;
+	private final static Material decayedPathMaterial = Material.SANDSTONE;
 	private final static Material stepMaterial = Material.STEP;
 	private final static Material ledgeMaterial = Material.CLAY;
 	
@@ -189,6 +190,7 @@ public class ParkLot extends ConnectedLot {
 			if (!neighbors.toNorth() && HeightInfo.isBuildableToNorth(generator, chunk)) {
 				chunk.clearBlocks(6, 10, surfaceY, surfaceY + 3, 0, 1);
 				chunk.setBlocks(6, surfaceY, surfaceY + 2, 0, columnMaterial);
+				
 				chunk.setBlocks(7, 9, surfaceY, surfaceY + 1, 0, 1, stepMaterial);
 				chunk.setBlocks(9, surfaceY, surfaceY + 2, 0, columnMaterial);
 			} else if (neighbors.toNorth()) {
@@ -277,12 +279,23 @@ public class ParkLot extends ConnectedLot {
 		// draw center bits
 		switch (centerStyle) {
 		case CIRCLE_PATH:
-			chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 0, 3, pathMaterial);
-			chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 13, 16, pathMaterial);
-			chunk.setBlocks(0, 3, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
-			chunk.setBlocks(13, 16, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
-			chunk.setCircle(8, 8, 4, surfaceY - 1, pathMaterial, false);
-			chunk.setCircle(8, 8, 3, surfaceY - 1, pathMaterial, false);
+			if (generator.settings.includeDecayedNature) {
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 0, 3, decayedPathMaterial);
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 13, 16, decayedPathMaterial);
+				chunk.setBlocks(0, 3, surfaceY - 1, surfaceY, 7, 9, decayedPathMaterial);
+				chunk.setBlocks(13, 16, surfaceY - 1, surfaceY, 7, 9, decayedPathMaterial);
+				chunk.setCircle(8, 8, 4, surfaceY - 1, decayedPathMaterial, false);
+				chunk.setCircle(8, 8, 3, surfaceY - 1, decayedPathMaterial, false);
+					
+			} else
+			{
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 0, 3, pathMaterial);
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 13, 16, pathMaterial);
+				chunk.setBlocks(0, 3, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
+				chunk.setBlocks(13, 16, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
+				chunk.setCircle(8, 8, 4, surfaceY - 1, pathMaterial, false);
+				chunk.setCircle(8, 8, 3, surfaceY - 1, pathMaterial, false);
+			}
 			break;
 		case LABYRINTH_MAZE:
 		case CIRCLE_MAZE:
@@ -292,10 +305,18 @@ public class ParkLot extends ConnectedLot {
 		case CROSS_PATH:
 		case WATER_TOWER:
 		default:
-			chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 0, 8, pathMaterial);
-			chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 8, 16, pathMaterial);
-			chunk.setBlocks(0, 8, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
-			chunk.setBlocks(8, 16, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
+			if (generator.settings.includeDecayedNature) {
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 0, 8, decayedPathMaterial);
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 8, 16, decayedPathMaterial);
+				chunk.setBlocks(0, 8, surfaceY - 1, surfaceY, 7, 9, decayedPathMaterial);
+				chunk.setBlocks(8, 16, surfaceY - 1, surfaceY, 7, 9, decayedPathMaterial);
+			} else {
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 0, 8, pathMaterial);
+				chunk.setBlocks(7, 9, surfaceY - 1, surfaceY, 8, 16, pathMaterial);
+				chunk.setBlocks(0, 8, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
+				chunk.setBlocks(8, 16, surfaceY - 1, surfaceY, 7, 9, pathMaterial);
+			}
+
 			break;
 		}
 	}

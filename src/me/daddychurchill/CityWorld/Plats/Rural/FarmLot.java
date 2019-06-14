@@ -734,8 +734,6 @@ public class FarmLot extends ConnectedLot {
 		CropType.FALLOW,
 		CropType.TRELLIS,
 		CropType.DEAD_BUSH,
-		CropType.BROWN_MUSHROOM,
-		CropType.RED_MUSHROOM,
 		CropType.DECAY_PLANTS,
 		CropType.PADDOCK
 		};
