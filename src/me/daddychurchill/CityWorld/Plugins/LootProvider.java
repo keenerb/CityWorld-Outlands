@@ -25,14 +25,19 @@ public abstract class LootProvider extends Provider {
 		
 		// default to stock LootProvider
 		if (provider == null) {
-			provider = new LootProvider_Normal();
+			if (generator.settings.includeDecayedNature) 
+			provider = new LootProvider_Decayed();
+			else;
+				provider = new LootProvider_Normal();
 		}
 	
 		return provider;
 	}
 	
 	protected ItemStack[] pickFromTreasures(MaterialList materials, Odds odds, int maxCount, int maxStack) {
+
 		int count = maxCount > 0 ? odds.getRandomInt(maxCount) + 1 : 0;
+
 		
 		// make room
 		ItemStack[] items = new ItemStack[count];
@@ -43,6 +48,7 @@ public abstract class LootProvider extends Provider {
 		}
 		
 		// all done
+
 		return items;
 	}
 	

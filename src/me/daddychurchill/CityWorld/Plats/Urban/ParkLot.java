@@ -186,7 +186,9 @@ public class ParkLot extends ConnectedLot {
 		case HEDGE_MAZE:
 		case CIRCLE_MAZE:
 			chunk.setWalls(0, 16, surfaceY - 1, surfaceY, 0, 16, Material.LOG);
-			chunk.setWalls(0, 16, surfaceY, surfaceY + 3, 0, 16, Material.LEAVES);
+			if (!generator.settings.includeDecayedNature) {
+				chunk.setWalls(0, 16, surfaceY, surfaceY + 3, 0, 16, Material.LEAVES);
+			}
 			if (!neighbors.toNorth() && HeightInfo.isBuildableToNorth(generator, chunk)) {
 				chunk.clearBlocks(6, 10, surfaceY, surfaceY + 3, 0, 1);
 				chunk.setBlocks(6, surfaceY, surfaceY + 2, 0, columnMaterial);
@@ -372,10 +374,11 @@ public class ParkLot extends ConnectedLot {
 				chunk.setWalls(2, 14, surfaceY - 1, surfaceY, 2, 14, Material.LOG);
 				chunk.setWalls(4, 12, surfaceY - 1, surfaceY, 4, 12, Material.LOG);
 				chunk.setWalls(6, 10, surfaceY - 1, surfaceY, 6, 10, Material.LOG);
-				chunk.setWalls(2, 14, surfaceY, surfaceY + 2, 2, 14, Material.LEAVES);
-				chunk.setWalls(4, 12, surfaceY, surfaceY + 3, 4, 12, Material.LEAVES);
-				chunk.setWalls(6, 10, surfaceY, surfaceY + 4, 6, 10, Material.LEAVES);
-				
+				if (!generator.settings.includeDecayedNature) {
+					chunk.setWalls(2, 14, surfaceY, surfaceY + 2, 2, 14, Material.LEAVES);
+					chunk.setWalls(4, 12, surfaceY, surfaceY + 3, 4, 12, Material.LEAVES);
+					chunk.setWalls(6, 10, surfaceY, surfaceY + 4, 6, 10, Material.LEAVES);
+				}
 				pokeHoleSomewhere(chunk, 3, 13, surfaceY, 2, 3);
 				pokeHoleSomewhere(chunk, 5, 11, surfaceY, 4, 5);
 				pokeHoleSomewhere(chunk, 7, 9, surfaceY, 6, 7);
@@ -403,15 +406,18 @@ public class ParkLot extends ConnectedLot {
 						int zWall = z * 2;
 						if ((x < 5) && (maze.getBit(xWall, zWall - 1) == MazeBit.WALL)) {
 							chunk.setBlocks(x2, x2 + 1, surfaceY - 1, surfaceY, z1, z2, Material.LOG);
-							chunk.setBlocks(x2, x2 + 1, surfaceY, surfaceY + 3, z1, z2, Material.LEAVES);
+							if (!generator.settings.includeDecayedNature)
+								chunk.setBlocks(x2, x2 + 1, surfaceY, surfaceY + 3, z1, z2, Material.LEAVES);
 						}
 						if ((z < 5) && (maze.getBit(xWall - 1, zWall) == MazeBit.WALL)) {
 							chunk.setBlocks(x1, x2, surfaceY - 1, surfaceY, z2, z2 + 1, Material.LOG);
-							chunk.setBlocks(x1, x2, surfaceY, surfaceY + 3, z2, z2 + 1, Material.LEAVES_2);
+							if (!generator.settings.includeDecayedNature)
+								chunk.setBlocks(x1, x2, surfaceY, surfaceY + 3, z2, z2 + 1, Material.LEAVES_2);
 						}
 						if ((x < 5) && (z < 5)) {
 							chunk.setBlocks(x2, surfaceY - 1, surfaceY, z2, Material.LOG);
-							chunk.setBlocks(x2, surfaceY, surfaceY + 3, z2, Material.LEAVES_2);
+							if (!generator.settings.includeDecayedNature)
+								chunk.setBlocks(x2, surfaceY, surfaceY + 3, z2, Material.LEAVES_2);
 						}
 					}
 				break;
