@@ -50,6 +50,7 @@ public class BunkerLot extends ConnectedLot {
 		bottomOfBunker = calcSegmentOrigin(platmap.generator.streetLevel) - bunkerBelowStreet;
 		topOfBunker = calcBunkerCeiling(platmap.generator);
 		
+		
 //		platmap.generator.reportMessage("minHeight = " + minHeight + 
 //			" calcSegmentOrigin(minHeight) = " + calcSegmentOrigin(minHeight) +
 //			" calcSegmentOrigin(minHeight) - bunkerBuffer = " + (calcSegmentOrigin(minHeight) - bunkerBuffer) +
@@ -210,6 +211,7 @@ public class BunkerLot extends ConnectedLot {
 		
 		// bottom
 		chunk.setLayer(yBottom, materials.support);
+		chunk.setBlock(1, 2, 1, Material.BEDROCK);
 		
 		// clear out stuff?
 		if (materials.bilge != Material.AIR)

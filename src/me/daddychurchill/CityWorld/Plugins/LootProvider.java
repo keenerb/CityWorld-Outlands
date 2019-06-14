@@ -1,11 +1,13 @@
 package me.daddychurchill.CityWorld.Plugins;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Support.MaterialList;
 import me.daddychurchill.CityWorld.Support.Odds;
+
 
 public abstract class LootProvider extends Provider {
 
@@ -14,7 +16,6 @@ public abstract class LootProvider extends Provider {
 	
 	public abstract void setLoot(CityWorldGenerator generator, Odds odds, String worldPrefix, LootLocation chestLocation, Block block);
 	public abstract void saveLoots();
-
 	public static LootProvider loadProvider(CityWorldGenerator generator) {
 		// Based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
 
@@ -51,5 +52,26 @@ public abstract class LootProvider extends Provider {
 
 		return items;
 	}
-	
+	protected ItemStack[] pickFromTreasuresDecayed(MaterialList materials, Odds odds, int maxCount, int maxStack) {
+
+		int count = maxCount;
+
+
+		
+		// make room
+		ItemStack[] items = new ItemStack[count];
+		
+		// populate
+		for (int i = 0; i < count; i++) {
+			if (maxCount == 2) {
+				items[i] = new ItemStack(Material.SANDSTONE);
+			} else {
+				items[i] = new ItemStack(Material.SAND);
+			}
+		}
+		
+		// all done
+
+		return items;
+	}
 }

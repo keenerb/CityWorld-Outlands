@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plats.Rural;
 
+import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -25,6 +26,7 @@ public class WaterTowerLot extends IsolatedLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk,
 			BiomeGrid biomes, DataContext context, int platX, int platZ) {
+		chunk.setBlock(6, 2, 3, Material.BEDROCK);
 
 	}
 

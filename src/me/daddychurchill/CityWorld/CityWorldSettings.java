@@ -84,9 +84,9 @@ public class CityWorldSettings {
 	private boolean checkMinInbetweenChunkDistanceOfCities = false;
 	public double ruralnessLevel = 0.0;
 	
-	public double oddsOfTreasureInSewers = Odds.oddsLikely;
+	public double oddsOfTreasureInSewers = Odds.oddsPrettyUnlikely ;
 	public double oddsOfTreasureInBunkers = Odds.oddsLikely;
-	public double oddsOfTreasureInMines = Odds.oddsLikely;
+	public double oddsOfTreasureInMines = Odds.oddsPrettyUnlikely ;
 	public double oddsOfTreasureInBuildings = Odds.oddsLikely;
 	public double oddsOfAlcoveInMines = Odds.oddsVeryLikely;
 	

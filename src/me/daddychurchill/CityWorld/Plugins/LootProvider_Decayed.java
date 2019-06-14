@@ -32,34 +32,33 @@ public class LootProvider_Decayed extends LootProvider {
 		case EMPTY:
 			return null;
 		case BUNKER:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_BunkerChests, odds, 3, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_BunkerChests, odds, 1, 1);
 		case MINE:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_MineChests, odds, 3, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_MineChests, odds, 2, 1);
 		case SEWER:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_SewerChests, odds, 3, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_SewerChests, odds, 3, 1);
 		case BUILDING:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_BuildingChests, odds, 5, 3);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_BuildingChests, odds, 4, 1);
 		case WAREHOUSE:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_WarehouseChests, odds, 1, 32);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_WarehouseChests, odds, 5, 1);
 		case FOOD:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_FoodChests, odds, 5, 3);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_FoodChests, odds, 1, 6);
 		case STORAGESHED:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_StorageShedChests, odds, 3, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_StorageShedChests, odds, 1, 7);
 		case FARMWORKS:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_FarmChests, odds, 4, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_FarmChests, odds, 1, 8);
 		case FARMWORKSOUTPUT:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_FarmOutputChests, odds, 8, 6);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_FarmOutputChests, odds, 1, 9);
 		case WOODWORKS:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_LumberChests, odds, 4, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_LumberChests, odds, 1, 10);
 		case WOODWORKSOUTPUT:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_LumberOutputChests, odds, 8, 6);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_LumberOutputChests, odds, 1, 11);
 		case STONEWORKS:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_QuaryChests, odds, 4, 2);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_QuaryChests, odds, 1, 12);
 		case STONEWORKSOUTPUT:
-			return pickFromTreasures(generator.materialProvider.itemsRandomMaterials_QuaryOutputChests, odds, 10, 6);
+			return pickFromTreasuresDecayed(generator.materialProvider.itemsRandomMaterials_QuaryOutputChests, odds, 1, 13);
 		case RANDOM:
-			lootLocation = LootLocation.values()[odds.getRandomInt(LootLocation.values().length - 1) + 1];
-			return getLoot(generator, odds, lootLocation, block);
+			return null;
 		}
 		
 		throw new IllegalArgumentException(); 

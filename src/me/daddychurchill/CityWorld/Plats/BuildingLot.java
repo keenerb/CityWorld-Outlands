@@ -257,6 +257,7 @@ public abstract class BuildingLot extends ConnectedLot {
 	protected void drawStairs(CityWorldGenerator generator, RealBlocks chunk, int y1, 
 			int floorHeight, StairWell where, Material stairMaterial, Material platformMaterial) {
 		StairAt at = new StairAt(chunk, floorHeight, where);
+		chunk.setBlock(10, 2, 1, Material.BEDROCK);
 		switch (stairStyle) {
 		case CROSSED:
 			if (floorHeight == 4) {

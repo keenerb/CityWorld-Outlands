@@ -24,6 +24,7 @@ public abstract class GravelLot extends ConstructLot {
 			PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes,
 			DataContext context, int platX, int platZ) {
 		// TODO Auto-generated method stub
+		chunk.setBlock(3, 2, 1, Material.BEDROCK);
 		
 	}
 

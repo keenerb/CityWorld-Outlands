@@ -135,6 +135,7 @@ public class OldCastleLot extends ConstructLot {
 		
 		// add third level
 		buildTower(generator, chunk, thirdX1, y3, thirdZ1, 5);
+		chunk.setBlock(12, 2, 1, Material.BEDROCK);
 	}
 	
 	private void buildWall(InitialBlocks chunk, int x, int y1, int y2, int z) {

@@ -44,6 +44,7 @@ public class HouseLot extends IsolatedLot {
 			chunk.setLayer(generator.streetLevel, Material.SAND);
 		else
 			chunk.setLayer(generator.streetLevel, generator.oreProvider.surfaceMaterial);
+		chunk.setBlock(6, 2, 3, Material.BEDROCK);
 	}
 	
 	@Override

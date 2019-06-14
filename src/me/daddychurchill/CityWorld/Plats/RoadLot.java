@@ -362,6 +362,8 @@ public class RoadLot extends ConnectedLot {
 	@Override
 	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
 
+		chunk.setBlock(10, 2, 3, Material.BEDROCK);
+		
 		// random bits
 		sewerCenterBit = chunkOdds.flipCoin();
 		sewerNorthWestBias = chunkOdds.flipCoin();

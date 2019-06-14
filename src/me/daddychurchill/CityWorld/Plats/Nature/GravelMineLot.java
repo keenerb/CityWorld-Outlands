@@ -1,5 +1,7 @@
 package me.daddychurchill.CityWorld.Plats.Nature;
 
+import org.bukkit.Material;
+
 import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
@@ -27,6 +29,7 @@ public class GravelMineLot extends GravelLot {
 		
 		// place snow
 		generateSurface(generator, chunk, false);
+		chunk.setBlock(4, 2, 1, Material.BEDROCK);
 		
 	}
 }

@@ -59,6 +59,7 @@ public class ConcreteLot extends BuildingLot {
 		flattenLot(generator, chunk, 4);
 //		chunk.setLayer(sidewalkLevel - 3, 3, generator.oreProvider.surfaceMaterial);
 //		chunk.setLayer(sidewalkLevel, sidewalkMaterial);
+		chunk.setBlock(6, 2, 2, Material.BEDROCK);
 	}
 
 	@Override

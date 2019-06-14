@@ -1,5 +1,7 @@
 package me.daddychurchill.CityWorld.Plats.Urban;
 
+import org.bukkit.Material;
+
 import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plugins.RoomProvider;

@@ -190,6 +190,7 @@ public class FarmLot extends ConnectedLot {
 			chunk.setBlock(0, generator.streetLevel, 15, dividerMaterial);
 		if (!farms.toSouthEast())
 			chunk.setBlock(15, generator.streetLevel, 15, dividerMaterial);
+		chunk.setBlock(6, 2, 3, Material.BEDROCK);
 	}
 	
 	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {

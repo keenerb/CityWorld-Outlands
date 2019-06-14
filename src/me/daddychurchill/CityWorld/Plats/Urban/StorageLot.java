@@ -42,6 +42,8 @@ public class StorageLot extends BuildingLot {
 			PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes,
 			DataContext context, int platX, int platZ) {
 		int groundY = getBottomY(generator);
+		
+		chunk.setBlock(6, 2, 4, Material.BEDROCK);
 
 		// look around
 		SurroundingLots neighbors = new SurroundingLots(platmap, platX, platZ);

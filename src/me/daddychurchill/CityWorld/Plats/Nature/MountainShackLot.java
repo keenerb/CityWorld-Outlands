@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plats.Nature;
 
+import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
 import me.daddychurchill.CityWorld.CityWorldGenerator;
@@ -28,6 +29,7 @@ public class MountainShackLot extends MountainFlatLot {
 		
 		// empty it out and add the retainer wall, as needed
 		generateRetainerLot(generator, chunk, context);
+		chunk.setBlock(9, 2, 1, Material.BEDROCK);
 	}
 
 	@Override

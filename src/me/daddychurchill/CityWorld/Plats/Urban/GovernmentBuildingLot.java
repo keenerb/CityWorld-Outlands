@@ -95,6 +95,7 @@ public class GovernmentBuildingLot extends FinishedBuildingLot {
 			super.drawExteriorParts(generator, byteChunk, context, y1 + higher, height, insetNS, insetWE, floor, onTopFloor, inMiddleSection,
 					cornerStyle, allowRounded, outsetEffect, wallMaterial, glassMaterial, heights);
 		}
+		
 	}
 	
 	@Override

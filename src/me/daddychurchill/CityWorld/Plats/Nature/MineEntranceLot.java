@@ -83,6 +83,7 @@ public class MineEntranceLot extends ConstructLot {
 		
 		// place snow
 		generateSurface(generator, chunk, false);
+		chunk.setBlock(7, 2, 1, Material.BEDROCK);
 	}
 	
 	private final static double oddsOfStairs = Odds.oddsVeryLikely;

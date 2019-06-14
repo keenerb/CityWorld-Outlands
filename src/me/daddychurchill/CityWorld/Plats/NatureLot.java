@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plats;
 
+import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 
 import me.daddychurchill.CityWorld.CityWorldGenerator;
@@ -41,6 +42,7 @@ public class NatureLot extends IsolatedLot {
 	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
 		generateSurface(generator, chunk, true);
 		generateEntities(generator, chunk);
+		chunk.setBlock(10, 2, 2, Material.BEDROCK);
 	}
 	
 	private final static int magicSeaSpawnY = 62;

@@ -51,6 +51,7 @@ public class RoadThroughBunkerLot extends RoadLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 		super.generateActualChunk(generator, platmap, chunk, biomes, context, platX, platZ);
+		chunk.setBlock(14, 2, 1, Material.BEDROCK);
 	}
 	
 	@Override

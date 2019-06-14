@@ -49,6 +49,7 @@ public class WoodworksLot extends ConstructLot {
 
 		// place snow
 		generateSurface(generator, chunk, false);
+		chunk.setBlock(1, 2, 2, Material.BEDROCK);
 	}
 	
 	private void generateSomething(CityWorldGenerator generator, RealBlocks chunk, int x, int y, int z) {

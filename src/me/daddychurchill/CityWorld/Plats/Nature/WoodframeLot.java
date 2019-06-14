@@ -2,6 +2,8 @@ package me.daddychurchill.CityWorld.Plats.Nature;
 
 import java.util.ArrayList;
 
+import org.bukkit.Material;
+
 import me.daddychurchill.CityWorld.CityWorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
@@ -73,6 +75,7 @@ public class WoodframeLot extends WoodworksLot {
 		
 		// place snow
 		generateSurface(generator, chunk, false);
+		chunk.setBlock(15, 2, 1, Material.BEDROCK);
 	}
 	
 }
