@@ -81,7 +81,8 @@ public class RoundaboutCenterLot extends IsolatedLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 		
-		chunk.setBlock(6, 2, 4, Material.BEDROCK);
+		chunk.setBlock(1, 2, 4, Material.BEDROCK);
+		chunk.setBlock(1, 2, 1, Material.STONE);
 		
 		// where to start?
 		int yPitTop = generator.streetLevel - 1;

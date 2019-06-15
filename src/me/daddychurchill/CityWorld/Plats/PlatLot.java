@@ -84,7 +84,7 @@ public abstract class PlatLot {
 	}
 	
 	public Biome getChunkBiome() {
-		return Biome.PLAINS;
+		return Biome.SAVANNA;
 	}
 	
 	public boolean isPlaceableAt(CityWorldGenerator generator, int chunkX, int chunkZ) {

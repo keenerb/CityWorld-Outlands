@@ -26,7 +26,9 @@ public class WaterTowerLot extends IsolatedLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk,
 			BiomeGrid biomes, DataContext context, int platX, int platZ) {
-		chunk.setBlock(6, 2, 3, Material.BEDROCK);
+		chunk.setBlock(1, 2, 5, Material.BEDROCK);
+		chunk.setBlock(5, 2, 4, Material.BEDROCK);
+		chunk.setBlock(1, 2, 1, Material.STONE);
 
 	}
 

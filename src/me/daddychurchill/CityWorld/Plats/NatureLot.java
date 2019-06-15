@@ -42,7 +42,10 @@ public class NatureLot extends IsolatedLot {
 	protected void generateActualBlocks(CityWorldGenerator generator, PlatMap platmap, RealBlocks chunk, DataContext context, int platX, int platZ) {
 		generateSurface(generator, chunk, true);
 		generateEntities(generator, chunk);
-		chunk.setBlock(10, 2, 2, Material.BEDROCK);
+		chunk.setBlock(1, 2, 1, Material.BEDROCK);
+		
+
+
 	}
 	
 	private final static int magicSeaSpawnY = 62;
@@ -55,6 +58,7 @@ public class NatureLot extends IsolatedLot {
 		// in the water?
 		if (y < magicSeaSpawnY) {
 			generator.spawnProvider.spawnSeaAnimals(generator, chunk, chunkOdds, x, magicSeaSpawnY, z);
+			chunk.setBlock(8, 2, 1, Material.BEDROCK);
 //			chunk.setBlock(x, 100, z, Material.LAPIS_BLOCK);
 		} else {
 //			int origY = getBlockY(x, z);

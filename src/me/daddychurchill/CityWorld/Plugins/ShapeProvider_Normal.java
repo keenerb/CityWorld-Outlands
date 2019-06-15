@@ -270,6 +270,8 @@ public class ShapeProvider_Normal extends ShapeProvider {
 					if (y == generator.seaLevel) {
 						generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, generator.settings.includeDecayedNature);
 						biome = Biome.BEACHES;
+					if (generator.settings.includeDecayedNature)
+							biome = Biome.DESERT;
 
 					// we are in the water! ...or are we?
 					} else if (y < generator.seaLevel) {
@@ -285,7 +287,8 @@ public class ShapeProvider_Normal extends ShapeProvider {
 								biome = Biome.OCEAN;
 							} else
 								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 2, ores.fluidSubsurfaceMaterial, y, ores.fluidSurfaceMaterial, false);
-
+						if (generator.settings.includeDecayedNature)
+							biome = Biome.DESERT;
 					// we are in the mountains
 					} else {
 
@@ -312,12 +315,14 @@ public class ShapeProvider_Normal extends ShapeProvider {
 								generateStratas(generator, lot, chunk, x, z, ores.substratumMaterial, ores.stratumMaterial, y - 1, ores.stratumMaterial, y, ores.stratumMaterial, surfaceCaves);
 							biome = Biome.ICE_MOUNTAINS;
 						}
+						if (generator.settings.includeDecayedNature) {
+							biome = Biome.DESERT_HILLS;
+						}
 					}
 				}
 				
 				// set biome for block
-				if (generator.settings.includeDecayedNature)
-					biome = Biome.DESERT;
+				
 				biomes.setBiome(x, z, remapBiome(generator, lot, biome));
 			}
 		}	

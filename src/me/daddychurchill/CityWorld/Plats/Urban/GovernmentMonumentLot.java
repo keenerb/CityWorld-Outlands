@@ -49,6 +49,11 @@ public class GovernmentMonumentLot extends ConstructLot {
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk,
 			BiomeGrid biomes, DataContext context, int platX, int platZ) {
 		int sidewalkLevel = getSidewalkLevel(generator);
+		
+		chunk.setBlock(1, 2, 2, Material.BEDROCK);
+		chunk.setBlock(6, 2, 3, Material.BEDROCK);
+		chunk.setBlock(1, 2, 1, Material.STONE);
+		
 		Material sidewalkMaterial = getSidewalkMaterial();
 		
 		chunk.setLayer(sidewalkLevel - 3, 3, foundationMaterial);
