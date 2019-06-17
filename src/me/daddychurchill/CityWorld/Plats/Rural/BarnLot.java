@@ -74,8 +74,13 @@ public class BarnLot extends IsolatedLot {
 //		if (blockYs.minHeight > generator.streetLevel)
 //			blockYs.report(generator, "*******");
 
-		// ground please
-		chunk.setWalls(0, 16, generator.streetLevel, generator.streetLevel + 1, 0, 16, Material.GRASS);
+		// ground please 
+		if (generator.settings.includeDecayedNature) {
+			chunk.setWalls(0, 16, generator.streetLevel, generator.streetLevel + 1, 0, 16, Material.SAND);
+		} else {
+			chunk.setWalls(0, 16, generator.streetLevel, generator.streetLevel + 1, 0, 16, Material.GRASS);
+		}
+		
 		chunk.setBlocks(1, 15, generator.streetLevel, 1, 15, Material.SANDSTONE);
 		chunk.setBlock(1, 2, 5, Material.BEDROCK);
 		chunk.setBlock(5, 2, 1, Material.BEDROCK);

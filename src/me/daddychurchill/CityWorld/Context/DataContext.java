@@ -14,7 +14,7 @@ public abstract class DataContext {
 
 	// While these are initialized here, the real defaults live in CivilizedContext and UncivilizedContext
 	
-	public double oddsOfIsolatedLots = Odds.oddsNeverGoingToHappen;
+	public double oddsOfIsolatedLots = Odds.oddsVeryUnlikely;
 	public double oddsOfIsolatedConstructs = Odds.oddsNeverGoingToHappen;
 	public double oddsOfParks = Odds.oddsNeverGoingToHappen; // parks show up 1/n of the time
 	

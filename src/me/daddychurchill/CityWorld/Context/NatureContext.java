@@ -22,7 +22,7 @@ public class NatureContext extends UncivilizedContext {
 	public NatureContext(CityWorldGenerator generator) {
 		super(generator);
 
-		oddsOfIsolatedConstructs = Odds.oddsSomewhatUnlikely;
+		oddsOfIsolatedConstructs = Odds.oddsSomewhatLikely;
 	}
 	
 	private final static double oddsOfBunkers = Odds.oddsLikely;
@@ -155,7 +155,7 @@ public class NatureContext extends UncivilizedContext {
 
 		// what type of height are we talking about?
 		if (state != HeightState.BUILDING && 
-			generator.shapeProvider.isIsolatedConstructAt(platmap.originX + x, platmap.originZ + z, oddsOfIsolatedConstructs)) {
+			generator.shapeProvider.isIsolatedConstructAt(platmap.originX + x, platmap.originZ + z, oddsOfIsolatedConstructs + 0.5)) {
 			PlatLot current = null;
 			
 			// what to make?
@@ -166,27 +166,9 @@ public class NatureContext extends UncivilizedContext {
 					current = new OilPlatformLot(platmap, platmap.originX + x, platmap.originZ + z);
 				break;
 			case SEA:
-				if (generator.settings.includeAirborneStructures) {
-					if (platmap.getOddsGenerator().playOdds(Odds.oddsSomewhatUnlikely))
-
-						// Hotair balloons
-						current = new HotairBalloonLot(platmap, platmap.originX + x, platmap.originZ + z);
-					
-						//TODO boat!
-				}
-				break;
 //			case BUILDING:
 //				break;
 			case LOWLAND:
-				if (generator.settings.includeAirborneStructures) {
-					if (platmap.getOddsGenerator().playOdds(Odds.oddsSomewhatUnlikely))
-
-						// Hotair balloons
-						current = new HotairBalloonLot(platmap, platmap.originX + x, platmap.originZ + z);
-					
-						//TODO Statue overlooking the city?
-				}
-				break;
 			case MIDLAND: 
 				// Mine entrance
 				if (generator.settings.includeMines)
