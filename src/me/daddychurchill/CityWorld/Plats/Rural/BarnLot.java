@@ -82,9 +82,8 @@ public class BarnLot extends IsolatedLot {
 		}
 		
 		chunk.setBlocks(1, 15, generator.streetLevel, 1, 15, Material.SANDSTONE);
-		chunk.setBlock(1, 2, 5, Material.BEDROCK);
-		chunk.setBlock(5, 2, 1, Material.BEDROCK);
-		chunk.setBlock(1, 2, 1, Material.STONE);
+		chunk.setBlock(1, 1, 2, Material.BEDROCK);
+		chunk.setBlock(2, 1, 0, Material.BEDROCK);
 
 	}
 

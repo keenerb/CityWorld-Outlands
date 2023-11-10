@@ -162,9 +162,9 @@ public class FactoryBuildingLot extends IndustrialBuildingLot {
 	protected void drawRoof(CityWorldGenerator generator, RealBlocks chunk, DataContext context, int y1, int insetNS,
 			int insetWE, int floor, boolean allowRounded, boolean outsetEffect, Material material, Surroundings heights,
 			RoofStyle thisStyle, RoofFeature thisFeature) {
-		chunk.setBlock(1, 2, 2, Material.BEDROCK);
-		chunk.setBlock(6, 2, 2, Material.BEDROCK);
-		chunk.setBlock(1, 2, 1, Material.STONE);
+		chunk.setBlocks(1, 3, 1, 1, 1, 15, Material.STONE);
+		chunk.setBlock(1, 1, 3, Material.BEDROCK);
+		chunk.setBlock(2, 1, 2, Material.BEDROCK);
 		switch (wallStyle) {
 		case BUILDING:
 			super.drawRoof(generator, chunk, context, y1, insetNS, insetWE, floor, allowRounded, outsetEffect, material, heights,

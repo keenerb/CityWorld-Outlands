@@ -147,10 +147,9 @@ public class GovernmentBuildingLot extends FinishedBuildingLot {
 	
 	private void drawFoundationSteps(SupportBlocks blocks, int y1, int y2, Surroundings heights) {
 		// NorthWest
-		blocks.setBlock(1, 2, 2, Material.BEDROCK);
-		blocks.setBlock(6, 2, 4, Material.BEDROCK);
-		blocks.setBlock(1, 2, 1, Material.STONE);
-		
+		blocks.setBlocks(1, 3, 1, 1, 1, 15, Material.STONE);
+		blocks.setBlock(1, 1, 3, Material.BEDROCK);
+		blocks.setBlock(2, 1, 3, Material.BEDROCK);
 		if (heights.toNorth()) {
 			if (heights.toWest()) {
 				if (heights.toNorthWest()) {

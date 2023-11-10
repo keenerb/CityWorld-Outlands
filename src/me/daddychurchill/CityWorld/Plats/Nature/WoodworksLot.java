@@ -49,7 +49,8 @@ public class WoodworksLot extends ConstructLot {
 
 		// place snow
 		generateSurface(generator, chunk, false);
-		chunk.setBlock(1, 2, 2, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 15, Material.BEDROCK);
 	}
 	
 	private void generateSomething(CityWorldGenerator generator, RealBlocks chunk, int x, int y, int z) {
@@ -85,7 +86,7 @@ public class WoodworksLot extends ConstructLot {
 			break;
 		case 8:
 			if (chunkOdds.flipCoin())
-				chunk.setChest(generator, x + 1, y, z, General.SOUTH, chunkOdds, 
+				chunk.setNormalChest(generator, x + 1, y, z, General.SOUTH, chunkOdds, 
 						generator.lootProvider, LootLocation.WOODWORKS);
 			if (chunkOdds.flipCoin())
 				chunk.setBlock(x + 3, y, z, Material.WORKBENCH);
@@ -97,7 +98,7 @@ public class WoodworksLot extends ConstructLot {
 			if (chunkOdds.flipCoin()) {
 				if (chunkOdds.flipCoin())
 					direction = General.SOUTH;
-				chunk.setDoubleChest(generator, chunkOdds.calcRandomRange(x + 1, x + 4), y, z, direction, chunkOdds, 
+				chunk.setNormalDoubleChest(generator, chunkOdds.calcRandomRange(x + 1, x + 4), y, z, direction, chunkOdds, 
 							generator.lootProvider, LootLocation.WOODWORKSOUTPUT);
 			} else {
 				direction = General.WEST;

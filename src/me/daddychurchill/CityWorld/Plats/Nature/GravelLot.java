@@ -24,8 +24,8 @@ public abstract class GravelLot extends ConstructLot {
 			PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes,
 			DataContext context, int platX, int platZ) {
 		// TODO Auto-generated method stub
-		chunk.setBlock(3, 2, 1, Material.BEDROCK);
-		
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 2, Material.BEDROCK);
 	}
 
 	protected static void generateTailings(CityWorldGenerator generator, Odds odds, RealBlocks chunk, int x1, int x2, int z1, int z2) {

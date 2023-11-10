@@ -158,7 +158,8 @@ public class OilPlatformLot extends ConstructLot {
 		}
 		generator.spawnProvider.spawnBeing(generator, chunk, chunkOdds, 5, y2 + 1, 5);
 		generator.spawnProvider.spawnBeing(generator, chunk, chunkOdds, 5, y3 + 1, 5);
-		chunk.setBlock(11, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 10, Material.BEDROCK);
 	}
 
 	private final static double decayedEdgeOdds = 0.25;

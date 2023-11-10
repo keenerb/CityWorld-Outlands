@@ -75,7 +75,8 @@ public class WoodframeLot extends WoodworksLot {
 		
 		// place snow
 		generateSurface(generator, chunk, false);
-		chunk.setBlock(15, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 14, Material.BEDROCK);
 	}
 	
 }

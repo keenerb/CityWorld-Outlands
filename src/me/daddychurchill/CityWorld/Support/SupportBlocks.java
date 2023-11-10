@@ -927,6 +927,15 @@ public abstract class SupportBlocks extends AbstractBlocks {
 		}
 	}
 	
+	public final void setNormalChest(CityWorldGenerator generator, int x, int y, int z, BadMagic.General direction, Odds odds, LootProvider lootProvider, LootLocation lootLocation) {
+		Block block = getActualBlock(x, y, z);
+		if (BlackMagic.setBlockType(block, Material.CHEST, direction.getData())) {
+			if (block.getType() == Material.CHEST) {
+				lootProvider.setLoot(generator, odds, world.getName(), lootLocation, block);
+			}
+		}
+	}
+	
 //	public final void setVine(int x, int y, int z, BlockFace ... facing) {
 //		setBlock(x, y, z, new Vine(facing));
 //	}
@@ -940,6 +949,14 @@ public abstract class SupportBlocks extends AbstractBlocks {
 //	}
 
 	public final void setChest(CityWorldGenerator generator, int x, int y, int z, BlockFace facing, Odds odds, LootProvider lootProvider, LootLocation lootLocation) {
+		
+		
+		Block block = getActualBlock(x, y, z, new Chest(facing));
+		if (isType(block, Material.TRAPPED_CHEST))
+			lootProvider.setLoot(generator, odds, world.getName(), lootLocation, block);
+	}
+	
+	public final void setNormalChest(CityWorldGenerator generator, int x, int y, int z, BlockFace facing, Odds odds, LootProvider lootProvider, LootLocation lootLocation) {
 		
 		
 		Block block = getActualBlock(x, y, z, new Chest(facing));
@@ -961,7 +978,20 @@ public abstract class SupportBlocks extends AbstractBlocks {
 			break;
 		}
 	}
-
+	public final void setNormalDoubleChest(CityWorldGenerator generator, int x, int y, int z, BadMagic.General direction, Odds odds, LootProvider lootProvider, LootLocation lootLocation) {
+		switch (direction) {
+		case EAST:
+		case WEST:
+			setChest(generator, x, y, z, direction, odds, lootProvider, lootLocation);
+			setChest(generator, x, y, z + 1, direction, odds, lootProvider, lootLocation);
+			break;
+		case NORTH:
+		case SOUTH:
+			setChest(generator, x, y, z, direction, odds, lootProvider, lootLocation);
+			setChest(generator, x + 1, y, z, direction, odds, lootProvider, lootLocation);
+			break;
+		}
+	}
 	public final void setWallSign(int x, int y, int z, BadMagic.General direction, String[] text) {
 		Block block = getActualBlock(x, y, z);
 		if (BlackMagic.setBlockType(block, Material.WALL_SIGN, direction.getData())) {

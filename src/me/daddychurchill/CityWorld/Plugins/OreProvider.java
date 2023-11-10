@@ -40,7 +40,7 @@ public abstract class OreProvider extends Provider {
 		stratumMaterial = Material.STONE;
 		substratumMaterial = Material.BEDROCK;
 		
-		fluidMaterial = Material.STATIONARY_WATER;
+		fluidMaterial = Material.SAND;
 		fluidFluidMaterial = Material.WATER;
 		fluidSurfaceMaterial = Material.SAND;
 		fluidSubsurfaceMaterial = Material.GRAVEL;
@@ -123,9 +123,9 @@ public abstract class OreProvider extends Provider {
 	 * wildly modified by daddychurchill
 	 */
 	
-	//                                                         WATER   LAVA   GRAV   COAL   IRON   GOLD  LAPIS  REDST   DIAM   EMER  
-	static final int[] ore_iterations = new int[]    {     8,     6,    40,    30,    12,     4,     2,     4,     2,    10};
-	static final int[] ore_amountToDo = new int[]    {     1,     1,    12,     8,     8,     3,     3,    10,     3,     1};
+	//                                                 WATER   LAVA   GRAV   COAL   IRON   GOLD  LAPIS  REDST   DIAM   EMER  
+	static final int[] ore_iterations = new int[]    {     0,     6,    40,    10,    3,     2,     1,     2,     1,    2};
+	static final int[] ore_amountToDo = new int[]    {     0,     1,    12,     4,     4,     1,     2,    2,     2,     1};
 	static final int[] ore_maxY = new int[]          {   128,    32,   111,   128,    61,    29,    25,    16,    15,    32};
 	static final int[] ore_minY = new int[]          {    32,     2,    40,    16,    10,     8,     8,     6,     2,     2};
 	static final boolean[] ore_upper = new boolean[] {  true, false, false,  true,  true,  true,  true,  true, false, false};

@@ -39,7 +39,8 @@ public class MountainTentLot extends MountainFlatLot {
 		// now make a tent
 		generator.structureOnGroundProvider.generateCampground(generator, chunk, context, chunkOdds, 
 				blockYs.averageHeight + 1);
-		chunk.setBlock(10, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 9, Material.BEDROCK);
 	}
 
 }

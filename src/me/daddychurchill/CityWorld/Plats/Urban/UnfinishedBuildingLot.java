@@ -85,9 +85,9 @@ public class UnfinishedBuildingLot extends BuildingLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 
-		chunk.setBlock(1, 2, 2, Material.BEDROCK);
-		chunk.setBlock(6, 2, 7, Material.BEDROCK);
-		chunk.setBlock(1, 2, 1, Material.STONE);
+		chunk.setBlocks(1, 1, 1, 1, 1, 15, Material.STONE);
+		chunk.setBlock(1, 1, 3, Material.BEDROCK);
+		chunk.setBlock(2, 1, 13, Material.BEDROCK);
 		
 		// check out the neighbors
 		SurroundingFloors neighborBasements = getNeighboringBasementCounts(platmap, platX, platZ);

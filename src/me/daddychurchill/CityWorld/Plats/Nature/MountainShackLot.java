@@ -29,7 +29,8 @@ public class MountainShackLot extends MountainFlatLot {
 		
 		// empty it out and add the retainer wall, as needed
 		generateRetainerLot(generator, chunk, context);
-		chunk.setBlock(9, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 8, Material.BEDROCK);
 	}
 
 	@Override

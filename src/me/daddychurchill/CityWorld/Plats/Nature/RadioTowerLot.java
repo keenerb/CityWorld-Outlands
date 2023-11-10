@@ -92,7 +92,8 @@ public class RadioTowerLot extends ConstructLot {
 			chunk.airoutBlocks(generator, originX + 3, originX + platformWidth - 3, platformY, platformY + 2, originZ + 3, originZ + platformWidth - 3, true);
 			chunk.setBlocks(originX + 2, originX + platformWidth - 2, platformY + 2, platformY + 3, originZ + 2, originZ + platformWidth - 2, roofMaterial);
 		}
-		chunk.setBlock(13, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 12, Material.BEDROCK);
 	}
 	
 	@Override

@@ -82,7 +82,8 @@ public class GravelworksLot extends GravelLot {
 		
 		// place snow
 		generateSurface(generator, chunk, false);
-		chunk.setBlock(5, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 4, Material.BEDROCK);
 		
 	}
 

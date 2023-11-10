@@ -70,9 +70,9 @@ public class MuseumBuildingLot extends FinishedBuildingLot {
 			Material materialWall, Material materialGlass, StairWell stairLocation, Material materialStair,
 			Material materialStairWall, Material materialPlatform, boolean drawStairWall, boolean drawStairs,
 			boolean topFloor, boolean singleFloor, Surroundings heights) {
-		chunk.setBlock(1, 2, 2, Material.BEDROCK);
-		chunk.setBlock(6, 2, 5, Material.BEDROCK);
-		chunk.setBlock(1, 2, 1, Material.STONE);
+		chunk.setBlocks(1, 3, 1, 1, 1, 15, Material.STONE);
+		chunk.setBlock(1, 1, 3, Material.BEDROCK);
+		chunk.setBlock(2, 1, 7, Material.BEDROCK);
 		
 		// outside 
 		drawExteriorDoors(generator, chunk, context, 

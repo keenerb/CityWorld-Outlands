@@ -41,7 +41,8 @@ public class CampgroundLot extends ConstructLot {
 		
 		// now make a tent
 		generator.structureOnGroundProvider.generateCampground(generator, chunk, context, chunkOdds, generator.streetLevel + 1);
-		chunk.setBlock(2, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 1, Material.BEDROCK);
 
 	}
 }

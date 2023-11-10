@@ -211,7 +211,8 @@ public class BunkerLot extends ConnectedLot {
 		
 		// bottom
 		chunk.setLayer(yBottom, materials.support);
-		chunk.setBlock(1, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 0, Material.BEDROCK);
 		
 		// clear out stuff?
 		if (materials.bilge != Material.AIR)
@@ -362,16 +363,16 @@ public class BunkerLot extends ConnectedLot {
 		
 		// walls
 		chunk.setCircle(8, 8, 5, topOfBunker, blockYs.maxHeight + 1, Material.AIR, true);
-		chunk.setCircle(8, 8, 6, topOfBunker, blockYs.minHeight + 1, materials.building, false);
-		chunk.setCircle(8, 8, 6, blockYs.minHeight, blockYs.averageHeight + 1, Material.STAINED_CLAY, false);
+		chunk.setCircle(8, 8, 6, topOfBunker, blockYs.minHeight + 1, Material.SANDSTONE, false);
+		chunk.setCircle(8, 8, 6, blockYs.minHeight, blockYs.averageHeight + 1, Material.SANDSTONE, false);
 		
 		// lid & crack
 		int lidY = blockYs.averageHeight - 1;
-		chunk.setCircle(8, 8, 5, lidY, Material.STAINED_CLAY, true);
-		for (int x = 3; x < 14; x += 2)
-			chunk.setTrapDoor(x, lidY, 7, TrapDoor.TOP_NORTH);
-		for (int x = 2; x < 15; x += 2)
-			chunk.setTrapDoor(x, lidY, 8, TrapDoor.TOP_SOUTH);
+		chunk.setCircle(8, 8, 5, lidY, Material.SANDSTONE, true);
+//		for (int x = 3; x < 14; x += 2)
+//			chunk.setTrapDoor(x, lidY, 7, TrapDoor.TOP_NORTH);
+//		for (int x = 2; x < 15; x += 2)
+//			chunk.setTrapDoor(x, lidY, 8, TrapDoor.TOP_SOUTH);
 		chunk.setLadder(2, topOfBunker, lidY, 8, BlockFace.WEST);
 		chunk.setWalls(2, 14, topOfBunker - 1, topOfBunker, 2, 14, materials.crosswalk);
 		

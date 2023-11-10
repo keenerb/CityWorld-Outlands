@@ -26,9 +26,8 @@ public class WaterTowerLot extends IsolatedLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk,
 			BiomeGrid biomes, DataContext context, int platX, int platZ) {
-		chunk.setBlock(1, 2, 5, Material.BEDROCK);
-		chunk.setBlock(5, 2, 4, Material.BEDROCK);
-		chunk.setBlock(1, 2, 1, Material.STONE);
+		chunk.setBlock(1, 1, 2, Material.BEDROCK);
+		chunk.setBlock(2, 1, 3, Material.BEDROCK);
 
 	}
 
@@ -37,12 +36,14 @@ public class WaterTowerLot extends IsolatedLot {
 			DataContext context, int platX, int platZ) {
 		
 		// if things are bad
+//		if (generator.settings.includeDecayedBuildings) {
+//			destroyLot(generator, generator.streetLevel - 2, generator.streetLevel + 2);
+//		} else {
+		generator.structureOnGroundProvider.drawWaterTower(generator, chunk, 4, generator.streetLevel + 1, 4, chunkOdds);
+		generateSurface(generator, chunk, false);
 		if (generator.settings.includeDecayedBuildings) {
-			destroyLot(generator, generator.streetLevel - 2, generator.streetLevel + 2);
-		} else {
-			generator.structureOnGroundProvider.drawWaterTower(generator, chunk, 4, generator.streetLevel + 1, 4, chunkOdds);
-			generateSurface(generator, chunk, false);
-		}
+		destroyLot(generator, generator.streetLevel - 2, generator.streetLevel + 2);
+    	}
 	}
 	
 	@Override

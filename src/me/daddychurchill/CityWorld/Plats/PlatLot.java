@@ -507,7 +507,7 @@ public abstract class PlatLot {
 
 		// cool stuff?
 		if (generator.settings.treasuresInMines && chunkOdds.playOdds(generator.settings.oddsOfTreasureInMines)) {
-			 chunk.setChest(generator, x, y, z, BadMagic.General.SOUTH, chunkOdds, generator.lootProvider, LootLocation.MINE);
+			 chunk.setNormalChest(generator, x, y, z, BadMagic.General.SOUTH, chunkOdds, generator.lootProvider, LootLocation.MINE);
 		}
 	}
 

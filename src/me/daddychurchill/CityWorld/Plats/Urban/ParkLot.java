@@ -114,9 +114,9 @@ public class ParkLot extends ConnectedLot {
 	@Override
 	protected void generateActualChunk(CityWorldGenerator generator, PlatMap platmap, InitialBlocks chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 
-		chunk.setBlock(1, 2, 3, Material.BEDROCK);
-		chunk.setBlock(7, 2, 1, Material.BEDROCK);
-		chunk.setBlock(1, 2, 1, Material.STONE);
+		chunk.setBlocks(1, 3, 1, 1, 1, 15, Material.STONE);
+		chunk.setBlock(1, 1, 3, Material.BEDROCK);
+		chunk.setBlock(2, 1, 9, Material.BEDROCK);
 		
 		// look around
 		SurroundingLots neighbors = new SurroundingLots(platmap, platX, platZ);

@@ -20,7 +20,9 @@ public abstract class MountainFlatLot extends ConstructLot {
 	}
 
 	protected void generateRetainerLot(CityWorldGenerator generator, InitialBlocks chunk, DataContext context) {
-		chunk.setBlock(8, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 7, Material.BEDROCK);
+		
 		// flatten things out a bit
 		for (int x = 0; x < chunk.width; x++) {
 			for (int z = 0; z < chunk.width; z++) {

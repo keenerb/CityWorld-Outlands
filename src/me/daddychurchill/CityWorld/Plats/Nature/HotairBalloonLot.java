@@ -57,7 +57,8 @@ public class HotairBalloonLot extends ConstructLot {
 			int rangeY = chunk.height - StructureInAirProvider.hotairBalloonHeight - atY;
 			if (rangeY > 1)
 				generator.structureInAirProvider.generateHotairBalloon(generator, chunk, context, atY + chunkOdds.getRandomInt(rangeY), chunkOdds);
-			chunk.setBlock(6, 2, 1, Material.BEDROCK);
+			chunk.setBlock(1, 1, 1, Material.BEDROCK);
+			chunk.setBlock(2, 1, 5, Material.BEDROCK);
 		}
 	}
 }

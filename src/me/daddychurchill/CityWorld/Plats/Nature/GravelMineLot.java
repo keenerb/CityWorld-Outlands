@@ -29,7 +29,8 @@ public class GravelMineLot extends GravelLot {
 		
 		// place snow
 		generateSurface(generator, chunk, false);
-		chunk.setBlock(4, 2, 1, Material.BEDROCK);
+		chunk.setBlock(1, 1, 1, Material.BEDROCK);
+		chunk.setBlock(2, 1, 3, Material.BEDROCK);
 		
 	}
 }

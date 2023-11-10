@@ -229,8 +229,6 @@ public abstract class ShapeProvider extends Provider {
 			if (lot.isValidStrataY(generator, blockX, subsurfaceY, blockZ)) 
 				chunk.setBlock(x, subsurfaceY, z, surfaceMaterial);
 		}
-		chunk.setBlock(1, 2, 1, Material.BEDROCK);
-		chunk.setBlock(2, 2, 2, Material.BEDROCK);
 	}
 
 	protected void generateStratas(CityWorldGenerator generator, PlatLot lot, InitialBlocks chunk, int x, int z, Material substratumMaterial, Material stratumMaterial,

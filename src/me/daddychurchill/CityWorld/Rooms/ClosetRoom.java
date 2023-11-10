@@ -50,7 +50,7 @@ public class ClosetRoom extends FilledRoom {
 		
 		// now the stuff
 		if (odds.playOdds(generator.settings.oddsOfTreasureInBuildings)) {
-			chunk.setChest(generator, x + 1, y, z + 1, facing, odds, generator.lootProvider, LootLocation.BUILDING);
+			chunk.setNormalChest(generator, x + 1, y, z + 1, facing, odds, generator.lootProvider, LootLocation.BUILDING);
 		} else {
 			Material shelveMaterial = getShelveMaterial(materialWall);
 			drawShelve(chunk, odds, x + 1, y, z + 1, shelveMaterial);
