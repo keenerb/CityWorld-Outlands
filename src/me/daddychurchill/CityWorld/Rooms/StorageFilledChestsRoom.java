@@ -84,6 +84,6 @@ public class StorageFilledChestsRoom extends StorageRoom {
 	}
 	
 	protected void drawChest(CityWorldGenerator generator, RealBlocks chunk, Odds odds, BadMagic.General direction, int x, int y, int z) {
-		chunk.setChest(generator, x, y, z, direction, odds, generator.lootProvider, LootLocation.WAREHOUSE);
+		chunk.setNormalChest(generator, x, y, z, direction, odds, generator.lootProvider, LootLocation.WAREHOUSE);
 	}
 }

@@ -102,16 +102,16 @@ public class StructureOnGroundProvider extends Provider {
 			BadMagic.General direction, LootLocation location) {
 		switch (direction) {
 		case NORTH:
-			chunk.setChest(generator, x + 1, y, z, direction, odds, generator.lootProvider, location);
+			chunk.setNormalChest(generator, x + 1, y, z, direction, odds, generator.lootProvider, location);
 			break;
 		case SOUTH:
-			chunk.setChest(generator, x - 1, y, z, direction, odds, generator.lootProvider, location);
+			chunk.setNormalChest(generator, x - 1, y, z, direction, odds, generator.lootProvider, location);
 			break;
 		case WEST:
-			chunk.setChest(generator, x, y, z + 1, direction, odds, generator.lootProvider, location);
+			chunk.setNormalChest(generator, x, y, z + 1, direction, odds, generator.lootProvider, location);
 			break;
 		case EAST:
-			chunk.setChest(generator, x, y, z - 1, direction, odds, generator.lootProvider, location);
+			chunk.setNormalChest(generator, x, y, z - 1, direction, odds, generator.lootProvider, location);
 			break;
 		}
 	}
