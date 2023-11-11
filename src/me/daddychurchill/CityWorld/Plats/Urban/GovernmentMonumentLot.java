@@ -35,8 +35,9 @@ public class GovernmentMonumentLot extends ConstructLot {
 		// what is it made of?
 		foundationMaterial = platmap.generator.materialProvider.itemsSelectMaterial_GovernmentFoundations.getRandomMaterial(chunkOdds, foundationMaterial);
 		columnMaterial = platmap.generator.materialProvider.itemsSelectMaterial_GovernmentWalls.getRandomMaterial(chunkOdds, columnMaterial);
+		foundationMaterial = Material.STONE;
+		
 	}
-	
 	private enum MonumentStyle {COLUMN, PYRAMID, PEDESTAL, CHICKEN};
 	private MonumentStyle monumentStyle;
 		
