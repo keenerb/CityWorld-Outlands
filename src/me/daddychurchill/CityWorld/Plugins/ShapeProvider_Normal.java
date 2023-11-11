@@ -71,7 +71,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	public final static double landAmplitude2 = landAmplitude1 / landFactor1to2;
 	public final static double landHorizontalScale2 = landHorizontalScale1 * landFactor1to2;
 
-	public final static double seaFrequency = 1.00;
+	public final static double seaFrequency = 0.25;
 	public final static double seaAmplitude = 2.00;
 	public final static double seaHorizontalScale = 1.0 / 384.0;
 
