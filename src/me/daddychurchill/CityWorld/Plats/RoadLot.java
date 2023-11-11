@@ -65,7 +65,7 @@ public class RoadLot extends ConnectedLot {
 	protected final static DyeColor pavementColor = DyeColor.CYAN;
 //	protected final static DyeColor crosswalkColor = DyeColor.YELLOW;
 	protected Material dirtroadMat;
-	protected final static DyeColor dirtroadColor = DyeColor.LIME;
+	protected final static DyeColor dirtroadColor = DyeColor.BROWN;
 	protected boolean dirtroadIsClay;
 	
 	protected boolean roundaboutRoad;
@@ -90,7 +90,7 @@ public class RoadLot extends ConnectedLot {
 		pavementMat = platmap.generator.materialProvider.itemsMaterialListFor_Roads.getNthMaterial(0, Material.STAINED_CLAY);
 		linesMat = platmap.generator.materialProvider.itemsMaterialListFor_Roads.getNthMaterial(1, Material.QUARTZ_BLOCK);
 		// paved sidewalk is 2, read in PlatLot
-		dirtroadMat = platmap.generator.materialProvider.itemsMaterialListFor_Roads.getNthMaterial(3, Material.DIRT);
+		dirtroadMat = platmap.generator.materialProvider.itemsMaterialListFor_Roads.getNthMaterial(3, Material.STAINED_CLAY);
 		// dirt sidewalk is 4, read in PlatLot
 
 		pavementIsClay = pavementMat == Material.STAINED_CLAY;
@@ -1139,7 +1139,7 @@ public class RoadLot extends ConnectedLot {
 			if (dirtroadIsClay)
 				chunk.setClay(x1, x2, y, z1, z2, dirtroadColor);
 			else if (dirtroadMat == Material.DIRT)
-				BlackMagic.setBlocks(chunk, x1, x2, y, z1, z2, dirtroadMat, 2); // Podzol dirt
+				BlackMagic.setBlocks(chunk, x1, x2, y, z1, z2, Material.SANDSTONE, 2); // Podzol dirt
 			else
 				chunk.setBlocks(x1, x2, y, z1, z2, dirtroadMat);
 	}
@@ -1149,7 +1149,7 @@ public class RoadLot extends ConnectedLot {
 			chunk.setBlocks(x1, x2, y, z1, z2, pavementSidewalk);
 		else
 			if (dirtroadSidewalk == Material.DIRT)
-				BlackMagic.setBlocks(chunk, x1, x2, y, z1, z2, dirtroadSidewalk, 1); // Coarse dirt
+				BlackMagic.setBlocks(chunk, x1, x2, y, z1, z2, Material.SAND, 1); // Coarse dirt
 			else
 				chunk.setBlocks(x1, x2, y, z1, z2, dirtroadSidewalk);
 	}
@@ -1159,7 +1159,7 @@ public class RoadLot extends ConnectedLot {
 			chunk.setBlock(x, y, z, pavementSidewalk);
 		else
 			if (dirtroadSidewalk == Material.DIRT)
-				BlackMagic.setBlock(chunk, x, y, z, dirtroadSidewalk, 1); // Coarse dirt
+				BlackMagic.setBlock(chunk, x, y, z, Material.SAND, 1); // Coarse dirt
 			else
 				chunk.setBlock(x, y, z, dirtroadSidewalk);
 	}
